@@ -44,65 +44,89 @@ module controller(
     output reg [2:0] aluop,
     output reg irwrite);
     
-    reg [5:0] state, nextstate;  //节拍状态、下一状态
+    reg [7:0] state, nextstate;  //节拍状态、下一状态
     reg pcwrite, pcwritecond;
 
     //状态码
-    //通用状态
-    parameter FETCH1 = 6'b000001;   //取指令（包括下一周期）
-    parameter FETCH2 = 6'b000010;   //取指令、pc+1、irwrite <= 1
-    parameter DECODE = 6'b000011;   //解析指令（irwrite <= 1且clk上升沿到来指令写入ir）
-    //访存型I型指令指令状态（高位00）
-    parameter MEMADR = 6'b000100;   //计算aluresult = rs + offset16，下一周期到来aluout = aluresult
-    parameter LWRD1 = 6'b000101;    //iord <= 1，这一信号和aluout要持续三个节拍，因为存储器要两个clk上升沿才能完成数据的读取
-    parameter LWRD2 = 6'b000110;
-    parameter LWRD3 = 6'b000111;
-    parameter LWWR = 6'b001000;     //写入寄存器，由于时钟的原因，下一个clk上升沿到来时才会成功写入
-    parameter SWWR1 = 6'b001001;    //计算aluresult = rs + offset16，iord <= 1
-    parameter SWWR2 = 6'b001010;
-    parameter SWWR3 = 6'b001011;
-    //R型指令状态（高位010）
+    //通用状态（高位000）
+    parameter FETCH1 = 8'b000_00001;   //取指令（包括下一周期）
+    parameter FETCH2 = 8'b000_00010;   //取指令、pc+1、irwrite <= 1
+    parameter DECODE = 8'b000_00011;   //解析指令（irwrite <= 1且clk上升沿到来指令写入ir）
+    //访存型I型指令指令状态（高位001）
+    parameter MEMADR = 8'b001_00000;   //计算aluresult = rs + offset16，下一周期到来aluout = aluresult
+    parameter LWRD1 = 8'b001_00001;    //iord <= 1，这一信号和aluout要持续三个节拍，因为存储器要两个clk上升沿才能完成数据的读取
+    parameter LWRD2 = 8'b001_00010;
+    parameter LWRD3 = 8'b001_00011;
+    parameter LWWR = 8'b001_00100;     //写入寄存器，由于时钟的原因，下一个clk上升沿到来时才会成功写入
+    parameter SWWR1 = 8'b001_00101;    //计算aluresult = rs + offset16，iord <= 1
+    parameter SWWR2 = 8'b001_00110;
+    parameter SWWR3 = 8'b001_00111;
+    parameter SB = 8'b001_01000;
+    parameter SH = 8'b001_01001;
+    //运算型I型指令状态（高位010）
+    parameter ADDIEX = 8'b010_00000;
+    parameter ADDIUEX = 8'b010_00001;
+    parameter ANDIEX = 8'b010_00010;
+    parameter LBUEX = 8'b010_00011;
+    parameter LHUEX = 8'b010_00100;
+    parameter LUIEX = 8'b010_00100;
+    parameter ORIEX = 8'b010_00101;
+    parameter SLTIEX = 8'b010_00110;
+    parameter SLTIUEX = 8'b010_00111;
+    parameter XORIEX = 8'b010_01000;
+    parameter ITYPEWR = 8'b010_11111;  //结果写入寄存器，寄存器地址默认regdst <= 2'b00指向rt提供地址，下一个clk上升沿到来成功写入
+    //条件分支型I型指令指令状态（高位011）
+    parameter BEQEX = 8'b011_00000;
+    parameter BGTZEX = 8'b011_00001;
+    parameter BLTZEX = 8'b011_00010;
+    parameter BNEEX = 8'b011_00011;
+    //R型指令状态（高位100）
     //典型R型指令（add，addu，and，sub）使用节拍：RTYPEEX + RTYPEWR
+    //（高位100_0）
+    parameter ADDEX = 8'b100_0_0000;
+    parameter ADDUEX = 8'b100_0_0001;
+    parameter ANDEX = 8'b100_0_0010;
+    parameter NOREX = 8'b100_0_0010;
+    parameter OREX = 8'b100_0_0011;
+    parameter SLLVEX = 8'b100_0_0100;
+    parameter SLTEX = 8'b100_0_0101;
+    parameter SLTUEX = 8'b100_0_0110;
+    parameter SRAVEX = 8'b100_0_0111;
+    parameter SUBEX = 8'b100_0_1000;
+    parameter SUBUEX = 8'b100_0_1001;
+    parameter XOREX = 8'b100_0_1010;
     //非典型R型指令（sll，srl）使用节拍：XXEX + RTYPEWR
-    parameter RTYPEEX = 6'b010000;
-    parameter RTYPEWR = 6'b010001;  //结果写入寄存器，寄存器地址经由regdst <= 2'b01指向rd提供地址，下一个clk上升沿到来成功写入
-    parameter SLLEX = 6'b010010;
-    parameter SRLEX = 6'b010011;
-    parameter JREX = 6'b010100;
-    //运算型I型指令状态（高位011）
-    parameter ADDIEX = 6'b011010;
-    parameter ANDIEX = 6'b011011;
-    parameter LUIEX = 6'b011100;
-    parameter ORIEX = 6'b011101;
-    parameter ITYPEWR = 6'b011110;  //结果写入寄存器，寄存器地址默认regdst <= 2'b00指向rt提供地址，下一个clk上升沿到来成功写入
-    //J型指令状态（高位100）
-    parameter JEX = 6'b100000;
-    parameter JALEX1 = 6'b100001;
-    parameter JALEX2 = 6'b100010;
-    parameter JWAIT1 = 6'b100011;   //pc值改变后，需要等待三个节拍，也就是两个clk上升沿（包括FETCH1）完成指令的读取
-    parameter JWAIT2 = 6'b100100;
-    //条件分支型I型指令指令状态（高位101）
-    parameter BEQEX = 6'b101000;
-    parameter BGTZEX = 6'b101001;
-    parameter BNEEX = 6'b101010;
+    //（高位100_1）
+    parameter SLLEX = 8'b100_1_0010;
+    parameter SRLEX = 8'b100_1_0011;
+    parameter JREX = 8'b100_1_0100;
+    parameter SRAEX = 8'b100_1_0101;
+    parameter RTYPEEX = 8'b100_11110;
+    parameter RTYPEWR = 8'b100_11111;  //结果写入寄存器，寄存器地址经由regdst <= 2'b01指向rd提供地址，下一个clk上升沿到来成功写入
+    //J型指令状态（高位101）
+    parameter JEX = 8'b101_00000;
+    parameter JALEX1 = 8'b101_00001;
+    parameter JALEX2 = 8'b101_00010;
+    parameter JWAIT1 = 8'b101_11110;   //pc值改变后，需要等待三个节拍，也就是两个clk上升沿（包括FETCH1）完成指令的读取
+    parameter JWAIT2 = 8'b101_11111;
     
     //操作码
-    parameter ADDI = 6'b001000; 
-    parameter ANDI = 6'b001100;
-    parameter BEQ = 6'b000100;
-    parameter BGTZ = 6'b000111;
-    parameter BNE = 6'b000101;
-    parameter J = 6'b000010;
-    parameter JAL = 6'b000011;
-    parameter LUI = 6'b001111;
-    parameter LW = 6'b100011;
-    parameter ORI = 6'b001101;
-    parameter SW = 6'b101011;
-    parameter RTYPE = 6'b000000;
-    parameter SLL = 6'b000000;
-    parameter SRL = 6'b000010;
-    parameter SLT = 6'b101010;
-    parameter JR = 6'b001000;
+    parameter ADDI = 8'b001000; 
+    parameter ANDI = 8'b001100;
+    parameter BEQ = 8'b000100;
+    parameter BGTZ = 8'b000111;
+    parameter BNE = 8'b000101;
+    parameter J = 8'b000010;
+    parameter JAL = 8'b000011;
+    parameter LUI = 8'b001111;
+    parameter LW = 8'b100011;
+    parameter ORI = 8'b001101;
+    parameter SW = 8'b101011;
+    parameter RTYPE = 8'b000000;
+    parameter SLL = 8'b000000;
+    parameter SRL = 8'b000010;
+    parameter SLT = 8'b101010;
+    parameter JR = 8'b001000;
 
     //节拍状态初始化与状态转变
     always @(posedge clk)
