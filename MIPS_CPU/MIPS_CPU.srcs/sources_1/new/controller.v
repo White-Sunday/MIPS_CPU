@@ -48,7 +48,7 @@ module controller(
     reg pcwrite, pcwritecond;
 
     //状态码
-    //通用状态（高位000）
+    //取指、译指阶段状态（高位000）
     parameter FETCH1 = 8'b000_00001;   //取指令（包括下一周期）
     parameter FETCH2 = 8'b000_00010;   //取指令、pc+1、irwrite <= 1
     parameter DECODE = 8'b000_00011;   //解析指令（irwrite <= 1且clk上升沿到来指令写入ir）
@@ -136,239 +136,242 @@ module controller(
     //下一节拍状态
     always @(*) begin
         case(state)
-            FETCH1: nextstate <= FETCH2;
-            FETCH2: nextstate <= DECODE;
+            //取指周期状态
+            FETCH1: nextstate = FETCH2;
+            FETCH2: nextstate = DECODE;
+            //译指周期状态
             DECODE: case(op)
-                        LW: nextstate <= MEMADR;
-                        SW: nextstate <= MEMADR;
+                        LW: nextstate = MEMADR;
+                        SW: nextstate = MEMADR;
                         RTYPE: 
                             case(func)
-                                SLL: nextstate <= SLLEX;
-                                SRL: nextstate <= SRLEX;
-                                JR:  nextstate <= JREX;
-                                default: nextstate <= RTYPEEX;
+                                SLL: nextstate = SLLEX;
+                                SRL: nextstate = SRLEX;
+                                JR:  nextstate = JREX;
+                                default: nextstate = RTYPEEX;
                                 //这里的default是指add等典型的R型指令
                             endcase
-                        BEQ:  nextstate <= BEQEX;
-                        BGTZ: nextstate <= BGTZEX;
-                        ADDI: nextstate <= ADDIEX;
-                        ANDI: nextstate <= ANDIEX;
-                        LUI:  nextstate <= LUIEX;
-                        ORI:  nextstate <= ORIEX;
-                        BNE:  nextstate <= BNEEX;
-                        J:    nextstate <= JEX;
-                        JAL:  nextstate <= JALEX1;
-                        default: nextstate <= FETCH1;
+                        BEQ:  nextstate = BEQEX;
+                        BGTZ: nextstate = BGTZEX;
+                        ADDI: nextstate = ADDIEX;
+                        ANDI: nextstate = ANDIEX;
+                        LUI:  nextstate = LUIEX;
+                        ORI:  nextstate = ORIEX;
+                        BNE:  nextstate = BNEEX;
+                        J:    nextstate = JEX;
+                        JAL:  nextstate = JALEX1;
+                        default: nextstate = FETCH1;
                         //default应该永远不会发生
                     endcase
+            //访存指令状态
             MEMADR: case(op)
-                        LW:   nextstate <= LWRD1;
-                        SW:   nextstate <= SWWR1;
-                        default: nextstate <= FETCH1;
+                        LW:   nextstate = LWRD1;
+                        SW:   nextstate = SWWR1;
+                        default: nextstate = FETCH1;
                         //default应该永远不会发生
                     endcase
             //lw    
-            LWRD1:  nextstate <= LWRD2;
-            LWRD2:  nextstate <= LWRD3;
-            LWRD3:  nextstate <= LWWR;
-            LWWR:   nextstate <= FETCH1;
+            LWRD1:  nextstate = LWRD2;
+            LWRD2:  nextstate = LWRD3;
+            LWRD3:  nextstate = LWWR;
+            LWWR:   nextstate = FETCH1;
             //sw
-            SWWR1:  nextstate <= SWWR2;
-            SWWR2:  nextstate <= SWWR3;
-            SWWR3:  nextstate <= FETCH1;
+            SWWR1:  nextstate = SWWR2;
+            SWWR2:  nextstate = SWWR3;
+            SWWR3:  nextstate = FETCH1;
             //r
-            RTYPEEX: nextstate <= RTYPEWR;
-            RTYPEWR: nextstate <= FETCH1;
+            RTYPEEX: nextstate = RTYPEWR;
+            RTYPEWR: nextstate = FETCH1;
             //srl
-            SRLEX:  nextstate <= RTYPEWR;
+            SRLEX:  nextstate = RTYPEWR;
             //sll
-            SLLEX:  nextstate <= RTYPEWR;
+            SLLEX:  nextstate = RTYPEWR;
             //jr
-            JREX:   nextstate <= RTYPEWR;
+            JREX:   nextstate = RTYPEWR;
             //beq
-            BEQEX:  nextstate <= JWAIT1;  //地址改变后需要有足够的时间取指令
+            BEQEX:  nextstate = JWAIT1;  //地址改变后需要有足够的时间取指令
             //bgtz
-            BGTZEX: nextstate <= JWAIT1;  //地址改变后需要有足够的时间取指令
+            BGTZEX: nextstate = JWAIT1;  //地址改变后需要有足够的时间取指令
             //bne
-            BNEEX:  nextstate <= JWAIT1;  //地址改变后需要有足够的时间取指令
+            BNEEX:  nextstate = JWAIT1;  //地址改变后需要有足够的时间取指令
             //i型
             //andi
-            ANDIEX: nextstate <= ITYPEWR;
+            ANDIEX: nextstate = ITYPEWR;
             //addi
-            ADDIEX: nextstate <= ITYPEWR;
+            ADDIEX: nextstate = ITYPEWR;
             //ori
-            ORIEX:  nextstate <= ITYPEWR;
+            ORIEX:  nextstate = ITYPEWR;
             //lui
-            LUIEX:  nextstate <= ITYPEWR;
+            LUIEX:  nextstate = ITYPEWR;
             //i
-            ITYPEWR: nextstate <= FETCH1;
+            ITYPEWR: nextstate = FETCH1;
             //j
-            JEX:    nextstate <= JWAIT1;
+            JEX:    nextstate = JWAIT1;
             //jal
-            JALEX1: nextstate <= JALEX2;
-            JALEX2: nextstate <= JWAIT1;
+            JALEX1: nextstate = JALEX2;
+            JALEX2: nextstate = JWAIT1;
             //jwait
-            JWAIT1: nextstate <= JWAIT2;
-            JWAIT2: nextstate <= FETCH1;
+            JWAIT1: nextstate = JWAIT2;
+            JWAIT2: nextstate = FETCH1;
 
-            default: nextstate <= FETCH1;
+            default: nextstate = FETCH1;
             //default应该永远不会发生
         endcase
     end
 
     always @(*) begin
         //每次执行该模块内容前，事先将下列信号置为0
-        irwrite <= 0;
-        pcwrite <= 0;
-        pcwritecond <= 0;
-        regwrite <= 0;
-        regdst <= 2'b00;
-        memread <= 0;
-        memwrite <= 0;
-        alusrca <= 2'b00;
-        alusrcb <= 3'b000;
-        aluop <= 3'b000;
-        pcsource <= 2'b00;
-        iord <= 0;
-        memtoreg <= 0;
+        irwrite = 0;
+        pcwrite = 0;
+        pcwritecond = 0;
+        regwrite = 0;
+        regdst = 2'b00;
+        memread = 0;
+        memwrite = 0;
+        alusrca = 2'b00;
+        alusrcb = 3'b000;
+        aluop = 3'b000;
+        pcsource = 2'b00;
+        iord = 0;
+        memtoreg = 0;
         case(state)
             FETCH1: begin
-                memread <= 1;  
+                memread = 1;  
             end
             FETCH2: begin
-                irwrite <= 1;
-                alusrcb <= 3'b001;
-                pcwrite <= 1;    
+                irwrite = 1;
+                alusrcb = 3'b001;
+                pcwrite = 1;    
             end
             DECODE: begin
-                aluop <= 3'b000;
-                alusrcb <= 3'b011;
+                aluop = 3'b000;
+                alusrcb = 3'b011;
             end
             MEMADR: begin
-                alusrca <= 2'b01;
-                alusrcb <= 3'b010;
+                alusrca = 2'b01;
+                alusrcb = 3'b010;
             end
             LWRD1: begin
-                alusrca <= 2'b01;
-                alusrcb <= 3'b010;
-                memread <= 1;
-                iord <= 1;
+                alusrca = 2'b01;
+                alusrcb = 3'b010;
+                memread = 1;
+                iord = 1;
             end
             LWRD2: begin
-                alusrca <= 2'b01;
-                alusrcb <= 3'b010;
-                memread <= 1;
-                iord <= 1;
+                alusrca = 2'b01;
+                alusrcb = 3'b010;
+                memread = 1;
+                iord = 1;
             end
             LWRD3: begin
-                memread <= 1;
-                iord <= 1;
+                memread = 1;
+                iord = 1;
             end
             LWWR: begin
-                regwrite <= 1;
-                memtoreg <= 1;
+                regwrite = 1;
+                memtoreg = 1;
             end
             SWWR1: begin
-                alusrca <= 2'b01;
-                alusrcb <= 3'b010;
-                memwrite <= 1;
-                iord <= 1;
+                alusrca = 2'b01;
+                alusrcb = 3'b010;
+                memwrite = 1;
+                iord = 1;
             end
             SWWR2: begin
-                alusrca <= 2'b01;
-                alusrcb <= 3'b010;
-                memwrite <= 1;
-                iord <= 1;
+                alusrca = 2'b01;
+                alusrcb = 3'b010;
+                memwrite = 1;
+                iord = 1;
             end
             SWWR3: begin  
-                memwrite <= 1;
-                iord <= 1;
+                memwrite = 1;
+                iord = 1;
             end
             RTYPEEX: begin
-                aluop <= 3'b111;
-                alusrca <= 2'b01;
+                aluop = 3'b111;
+                alusrca = 2'b01;
             end
             RTYPEWR: begin
-                regdst <= 2'b01;
-                regwrite <= 1;
+                regdst = 2'b01;
+                regwrite = 1;
             end
             SRLEX: begin
-                aluop <= 3'b111;
-                alusrca <= 2'b10;
+                aluop = 3'b111;
+                alusrca = 2'b10;
             end
             SLLEX: begin
-                aluop <= 3'b111;
-                alusrca <= 2'b10;
+                aluop = 3'b111;
+                alusrca = 2'b10;
             end
             JREX: begin
-                pcwrite <= 1;
-                aluop <= 3'b111;
-                alusrca <= 2'b01;
-                alusrcb <= 3'b110;
+                pcwrite = 1;
+                aluop = 3'b111;
+                alusrca = 2'b01;
+                alusrcb = 3'b110;
             end
             BEQEX: begin
-                alusrca <= 2'b01;
-                aluop <= 3'b010;
-                pcwritecond <= 1;
-                pcsource <= 2'b01;
+                alusrca = 2'b01;
+                aluop = 3'b010;
+                pcwritecond = 1;
+                pcsource = 2'b01;
             end
             BGTZEX: begin
-                aluop <= 3'b100;
-                alusrca <= 2'b01;
-                pcwritecond <= 1;
-                pcsource <= 2'b01;
+                aluop = 3'b100;
+                alusrca = 2'b01;
+                pcwritecond = 1;
+                pcsource = 2'b01;
             end
             BNEEX: begin
-                alusrca <= 2'b01;
-                aluop <= 3'b011;
-                pcwritecond <= 1;
-                pcsource <= 2'b01;
+                alusrca = 2'b01;
+                aluop = 3'b011;
+                pcwritecond = 1;
+                pcsource = 2'b01;
             end
             ANDIEX: begin
-                aluop <= 3'b001;
-                alusrca <= 2'b01;
-                alusrcb <= 3'b100;
+                aluop = 3'b001;
+                alusrca = 2'b01;
+                alusrcb = 3'b100;
             end
             ADDIEX: begin
-                aluop <= 3'b000;
+                aluop = 3'b000;
                 //a+offset16
-                alusrca <= 2'b01;
-                alusrcb <= 3'b010;
+                alusrca = 2'b01;
+                alusrcb = 3'b010;
             end
             ORIEX: begin
-                aluop <= 3'b110;
-                alusrca <= 2'b01;
-                alusrcb <= 3'b100;
+                aluop = 3'b110;
+                alusrca = 2'b01;
+                alusrcb = 3'b100;
             end
             LUIEX: begin
-                aluop <= 3'b101;
-                alusrca <= 2'b01;
-                alusrcb <= 3'b101;
+                aluop = 3'b101;
+                alusrca = 2'b01;
+                alusrcb = 3'b101;
             end
             ITYPEWR: begin
-                regwrite <= 1;
+                regwrite = 1;
             end
             JEX: begin
-                pcwrite <= 1;
-                pcsource <= 2'b10;
+                pcwrite = 1;
+                pcsource = 2'b10;
             end
             JALEX1: begin
-                alusrcb <= 3'b001;
-                aluop <= 3'b000;
+                alusrcb = 3'b001;
+                aluop = 3'b000;
             end
             JALEX2: begin
-                regdst <= 2'b10;
-                regwrite <= 1;
+                regdst = 2'b10;
+                regwrite = 1;
                 // aluop <= 3'b000;
                 // alusrcb <= 3'b011;
-                pcwrite <= 1;
-                pcsource <= 2'b10;
+                pcwrite = 1;
+                pcsource = 2'b10;
             end
             JWAIT1: begin
-                memread <= 1;
+                memread = 1;
             end
             JWAIT2: begin
-                memread <= 1;
+                memread = 1;
             end
         endcase
     end

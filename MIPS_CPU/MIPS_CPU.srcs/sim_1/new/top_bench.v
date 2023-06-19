@@ -39,27 +39,27 @@ module top_bench();
     parameter KEYDELY = 5000;
     initial 
 
-    begin
-        clk<=0;
-        reset <=1;
-        #22;
-        reset <=0;
-        switch = 4'h0000;
-        key = 2'b00;
-        #100000 key = 2'b01;  
-        #DELY key = 2'b00;
-        #100000 key = 2'b01;  
-        #DELY key = 2'b00;
+    // begin
+    //     clk<=0;
+    //     reset <=1;
+    //     #22;
+    //     reset <=0;
+    //     switch = 4'h0000;
+    //     key = 2'b00;
+    //     #100000 key = 2'b01;  
+    //     #DELY key = 2'b00;
+    //     #100000 key = 2'b01;  
+    //     #DELY key = 2'b00;
 
 
-        #100000 switch = 16'b0100111001000111; 
-        #KEYDELY key = 2'b10;  
-        #DELY key = 2'b00;
+    //     #100000 switch = 16'b0100111001000111; 
+    //     #KEYDELY key = 2'b10;  
+    //     #DELY key = 2'b00;
 
-        #100000 switch = 16'b0100100001001101; 
-        #KEYDELY key = 2'b10;  
-        #DELY key = 2'b00;
-    end
+    //     #100000 switch = 16'b0100100001001101; 
+    //     #KEYDELY key = 2'b10;  
+    //     #DELY key = 2'b00;
+    // end
 
     always #5 clk=~clk;
 endmodule
