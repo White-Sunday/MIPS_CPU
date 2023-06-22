@@ -9,7 +9,7 @@
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
-// Description: CPU（controller+alucontrol+datapath）
+// Description: CPU（controller+alu_control+datapath）
 // controller可以看做CU，ALU在datapath里
 // 已实现部分mips指令集:
 // add
@@ -37,69 +37,72 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module mips #(parameter WIDTH=32, REGBITS=5)(
+module mips #(parameter WIDTH=32, ADDR=16, REGBITS=5)(
     input clk,
     input reset,
-    input [WIDTH-1:0] memdata,      //主存数据
-    output memread,                 //主存读信号
-    output memwrite,                //主存写信号
-    output [15:0] adr,                
-    output [WIDTH-1:0] writedata);  //写入主存数据
+    output mem_read,                //主存读信号
+    output mem_write,               //主存写信号
+    output [ADDR-1:0] addr,
+    input [WIDTH-1:0] mem_read_data,        //主存数据                
+    output [WIDTH-1:0] mem_write_data);     //写入主存数据
     
     wire [31:0] instr;      //指令
 
     //CU控制信号
-    wire zero, memtoreg, iord, pcen, regwrite;
-    wire [1:0] regdst;
-    wire [2:0] aluop;
-    wire [1:0] pcsource,alusrca;
-    wire [2:0] alusrcb;
-    wire irwrite;
+    wire zero;              //alu计算结果是否为0
+    wire addr_sel;          //存储器地址addr二路选择信号
+    wire pc_en;             //pc触发器使能信号，next_pc->pc
+    wire ir_write;          //ir写信号
+    wire reg_write;         //寄存器写信号
+    wire reg_write_sel;     //寄存器组写入数据选择信号
 
-    //alucontrol输出运算模式（控制ALU进行加还是减）信号
-    wire [3:0] alucont;
+    wire [1:0] reg_write_addr_sel;      //寄存器组地址reg_write_addr四路选择
+    wire [1:0] pc_src_sel;
+    wire [2:0] alu_op;
+    wire [1:0] alu_srca_sel;
+    wire [2:0] alu_srcb_sel;
+    wire [3:0] alu_cont;    //alu_control输出运算模式（控制ALU进行加还是减）信号
     
     //控制器controller
     controller cu(
         .clk(clk),
         .reset(reset),
         .op(instr[31:26]),
+        .func(instr[5:0]),
         .zero(zero),
-        .memread(memread),
-        .memwrite(memwrite),
-        .alusrca(alusrca),
-        .memtoreg(memtoreg),
-        .iord(iord),
-        .pcen(pcen),
-        .regwrite(regwrite),
-        .regdst(regdst),
-        .pcsource(pcsource),
-        .alusrcb(alusrcb),
-        .aluop(aluop),
-        .irwrite(irwrite),
-        .func(instr[5:0]));
+        .mem_write(mem_write),
+        .reg_write(reg_write),
+        .reg_write_sel(reg_write_sel),
+        .addr_sel(addr_sel),
+        .ir_write(ir_write),
+        .pc_en(pc_en),
+        .reg_write_addr_sel(reg_write_addr_sel),
+        .pc_src_sel(pc_src_sel),
+        .alu_srca_sel(alu_srca_sel),
+        .alu_srcb_sel(alu_srcb_sel),
+        .alu_op(alu_op));
     
-    //运算器控制alucontrol 根据aluop和指令操作码，输出信号控制ALU进行何种运算
-    alucontrol ac(aluop, instr[5:0], alucont);
+    //运算器控制alu_control 根据alu_op和指令操作码，输出信号控制ALU进行何种运算
+    alucontrol ac(alu_op, instr[5:0], alu_cont);
     
     //数据通路datapath
-    datapath #(WIDTH,REGBITS) dp(
+    datapath #(WIDTH,ADDR,REGBITS) dp(
         .clk(clk),
         .reset(reset),
-        .memdata(memdata),
-        .alusrca(alusrca),
-        .memtoreg(memtoreg),
-        .iord(iord),
-        .pcen(pcen),
-        .regwrite(regwrite),
-        .regdst(regdst),
-        .pcsource(pcsource),
-        .alusrcb(alusrcb),
-        .irwrite(irwrite),
-        .alucont(alucont),
+        .mem_data_in(mem_read_data),
+        .reg_write(reg_write),
+        .reg_write_sel(reg_write_sel),
+        .addr_sel(addr_sel),
+        .ir_write(ir_write),
+        .pc_en(pc_en),
+        .reg_write_addr_sel(reg_write_addr_sel),
+        .pc_src_sel(pc_src_sel),
+        .alu_srca_sel(alu_srca_sel),
+        .alu_srcb_sel(alu_srcb_sel),
+        .alu_cont(alu_cont),
         .zero(zero),
         .instr(instr),
-        .adr(adr),
-        .writedata(writedata));
+        .addr(addr),
+        .mem_write_data(mem_write_data));
 endmodule 
 

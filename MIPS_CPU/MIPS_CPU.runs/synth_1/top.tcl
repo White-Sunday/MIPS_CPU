@@ -4,7 +4,7 @@
 
 set TIME_start [clock seconds] 
 namespace eval ::optrace {
-  variable script "D:/MyCode/EDA/Vivado/CPU_SOC/CPU_SOC.runs/synth_1/top.tcl"
+  variable script "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU/MIPS_CPU.runs/synth_1/top.tcl"
   variable category "vivado_synth"
 }
 
@@ -70,55 +70,39 @@ proc create_report { reportName command } {
   }
 }
 OPTRACE "synth_1" START { ROLLUP_AUTO }
-set_param checkpoint.writeSynthRtdsInDcp 1
-set_param chipscope.maxJobs 3
-set_msg_config -id {Synth 8-256} -limit 10000
-set_msg_config -id {Synth 8-638} -limit 10000
+set_param chipscope.maxJobs 5
 OPTRACE "Creating in-memory project" START { }
 create_project -in_memory -part xc7a35tcpg236-1
 
 set_param project.singleFileAddWarning.threshold 0
 set_param project.compositeFile.enableAutoGeneration 0
 set_param synth.vivado.isSynthRun true
-set_msg_config -source 4 -id {IP_Flow 19-2162} -severity warning -new_severity info
-set_property webtalk.parent_dir D:/MyCode/EDA/Vivado/CPU_SOC/CPU_SOC.cache/wt [current_project]
-set_property parent.project_path D:/MyCode/EDA/Vivado/CPU_SOC/CPU_SOC.xpr [current_project]
-set_property XPM_LIBRARIES XPM_MEMORY [current_project]
+set_property webtalk.parent_dir D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU/MIPS_CPU.cache/wt [current_project]
+set_property parent.project_path D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU/MIPS_CPU.xpr [current_project]
 set_property default_lib xil_defaultlib [current_project]
 set_property target_language Verilog [current_project]
-set_property ip_output_repo d:/MyCode/EDA/Vivado/CPU_SOC/CPU_SOC.cache/ip [current_project]
+set_property ip_output_repo d:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU/MIPS_CPU.cache/ip [current_project]
 set_property ip_cache_permissions {read write} [current_project]
 OPTRACE "Creating in-memory project" END { }
 OPTRACE "Adding files" START { }
-add_files D:/MyCode/EDA/Vivado/CPU_SOC/CPU_SOC.srcs/sources_1/ip/ins_mem.coe
 read_verilog -library xil_defaultlib {
-  D:/MyCode/EDA/Vivado/CPU_SOC/CPU_SOC.srcs/sources_1/new/adrmux2.v
-  D:/MyCode/EDA/Vivado/CPU_SOC/CPU_SOC.srcs/sources_1/new/alu.v
-  D:/MyCode/EDA/Vivado/CPU_SOC/CPU_SOC.srcs/sources_1/new/alucontrol.v
-  D:/MyCode/EDA/Vivado/CPU_SOC/CPU_SOC.srcs/sources_1/new/controller.v
-  D:/MyCode/EDA/Vivado/CPU_SOC/CPU_SOC.srcs/sources_1/new/datamux4.v
-  D:/MyCode/EDA/Vivado/CPU_SOC/CPU_SOC.srcs/sources_1/new/datapath.v
-  D:/MyCode/EDA/Vivado/CPU_SOC/CPU_SOC.srcs/sources_1/new/digital.v
-  D:/MyCode/EDA/Vivado/CPU_SOC/CPU_SOC.srcs/sources_1/new/digital_trans.v
-  D:/MyCode/EDA/Vivado/CPU_SOC/CPU_SOC.srcs/sources_1/new/flop.v
-  D:/MyCode/EDA/Vivado/CPU_SOC/CPU_SOC.srcs/sources_1/new/flopen.v
-  D:/MyCode/EDA/Vivado/CPU_SOC/CPU_SOC.srcs/sources_1/new/flopenr.v
-  D:/MyCode/EDA/Vivado/CPU_SOC/CPU_SOC.srcs/sources_1/new/memadr.v
-  D:/MyCode/EDA/Vivado/CPU_SOC/CPU_SOC.srcs/sources_1/new/memory.v
-  D:/MyCode/EDA/Vivado/CPU_SOC/CPU_SOC.srcs/sources_1/new/mips.v
-  D:/MyCode/EDA/Vivado/CPU_SOC/CPU_SOC.srcs/sources_1/new/mux2.v
-  D:/MyCode/EDA/Vivado/CPU_SOC/CPU_SOC.srcs/sources_1/new/mux4.v
-  D:/MyCode/EDA/Vivado/CPU_SOC/CPU_SOC.srcs/sources_1/new/mux8.v
-  D:/MyCode/EDA/Vivado/CPU_SOC/CPU_SOC.srcs/sources_1/new/regfile.v
-  D:/MyCode/EDA/Vivado/CPU_SOC/CPU_SOC.srcs/sources_1/new/zerodetect.v
-  D:/MyCode/EDA/Vivado/CPU_SOC/CPU_SOC.srcs/sources_1/new/top.v
+  D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU/MIPS_CPU.srcs/sources_1/new/alu.v
+  D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU/MIPS_CPU.srcs/sources_1/new/alucontrol.v
+  D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU/MIPS_CPU.srcs/sources_1/new/controller.v
+  D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU/MIPS_CPU.srcs/sources_1/new/datapath.v
+  D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU/MIPS_CPU.srcs/sources_1/new/flop.v
+  D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU/MIPS_CPU.srcs/sources_1/new/flopen.v
+  D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU/MIPS_CPU.srcs/sources_1/new/flopenr.v
+  D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU/MIPS_CPU.srcs/sources_1/new/memory.v
+  D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU/MIPS_CPU.srcs/sources_1/new/mips.v
+  D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU/MIPS_CPU.srcs/sources_1/new/mux2.v
+  D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU/MIPS_CPU.srcs/sources_1/new/mux4.v
+  D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU/MIPS_CPU.srcs/sources_1/new/mux8.v
+  D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU/MIPS_CPU.srcs/sources_1/new/ram.v
+  D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU/MIPS_CPU.srcs/sources_1/new/regfile.v
+  D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU/MIPS_CPU.srcs/sources_1/new/rom.v
+  D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU/MIPS_CPU.srcs/sources_1/new/top.v
 }
-read_ip -quiet D:/MyCode/EDA/Vivado/CPU_SOC/CPU_SOC.srcs/sources_1/ip/dat_mem/dat_mem.xci
-set_property used_in_implementation false [get_files -all d:/MyCode/EDA/Vivado/CPU_SOC/CPU_SOC.gen/sources_1/ip/dat_mem/dat_mem_ooc.xdc]
-
-read_ip -quiet D:/MyCode/EDA/Vivado/CPU_SOC/CPU_SOC.srcs/sources_1/ip/ins_mem/ins_mem.xci
-set_property used_in_implementation false [get_files -all d:/MyCode/EDA/Vivado/CPU_SOC/CPU_SOC.gen/sources_1/ip/ins_mem/ins_mem_ooc.xdc]
-
 OPTRACE "Adding files" END { }
 # Mark all dcp files as not used in implementation to prevent them from being
 # stitched into the results of this synthesis run. Any black boxes in the
@@ -128,12 +112,12 @@ OPTRACE "Adding files" END { }
 foreach dcp [get_files -quiet -all -filter file_type=="Design\ Checkpoint"] {
   set_property used_in_implementation false $dcp
 }
-read_xdc D:/MyCode/EDA/Vivado/CPU_SOC/CPU_SOC.srcs/constrs_1/new/con1.xdc
-set_property used_in_implementation false [get_files D:/MyCode/EDA/Vivado/CPU_SOC/CPU_SOC.srcs/constrs_1/new/con1.xdc]
+read_xdc D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU/MIPS_CPU.srcs/constrs_1/new/con1.xdc
+set_property used_in_implementation false [get_files D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU/MIPS_CPU.srcs/constrs_1/new/con1.xdc]
 
 set_param ips.enableIPCacheLiteLoad 1
 
-read_checkpoint -auto_incremental -incremental D:/MyCode/EDA/Vivado/CPU_SOC/CPU_SOC.srcs/utils_1/imports/synth_1/top.dcp
+read_checkpoint -auto_incremental -incremental D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU/MIPS_CPU.srcs/utils_1/imports/synth_1/top.dcp
 close [open __synthesis_is_running__ w]
 
 OPTRACE "synth_design" START { }

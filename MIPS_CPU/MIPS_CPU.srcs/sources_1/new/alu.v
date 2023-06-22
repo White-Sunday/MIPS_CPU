@@ -23,7 +23,7 @@
 
 module alu#(parameter WIDTH=32)(
     input [WIDTH-1:0] a,b,
-    input [3:0] alucont,
+    input [3:0] alu_cont,
     output reg [WIDTH-1:0] result);
 
     wire [WIDTH-1:0] b2, sub, slt;
@@ -31,17 +31,18 @@ module alu#(parameter WIDTH=32)(
     assign sub = a+b2;
     assign slt = sub[WIDTH-1];
 
-    always @(*)
-    case (alucont[3:0])
-        4'b0000: result <= a+b;
-        4'b0001: result <= a&b;
-        4'b0010: result <= a+b2;
-        4'b0011: result <= (a[31]==0&&a!=0)?0:1;
-        4'b0100: result <= (a==b);
-        4'b0101: result <= (a+b);
-        4'b0110: result <= (a|b);
-        4'b0111: result <= (b<<a);
-        4'b1000: result <= (b>>a);
-        4'b1001: result <= slt;
-    endcase
+    always @(*)begin
+        case (alu_cont[3:0])
+            4'b0000: result = a+b;
+            4'b0001: result = a&b;
+            4'b0010: result = a+b2;
+            4'b0011: result = (a[31]==0&&a!=0)?0:1;
+            4'b0100: result = (a==b);
+            4'b0101: result = (a+b);
+            4'b0110: result = (a|b);
+            4'b0111: result = (b<<a);
+            4'b1000: result = (b>>a);
+            4'b1001: result = slt;
+        endcase
+    end
 endmodule

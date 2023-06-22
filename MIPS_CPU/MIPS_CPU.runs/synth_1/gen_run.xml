@@ -1,22 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<GenRun Id="synth_1" LaunchPart="xc7a35tcpg236-1" LaunchTime="1656756766" LaunchIncrCheckpoint="$PSRCDIR/utils_1/imports/synth_1/top.dcp">
+<GenRun Id="synth_1" LaunchPart="xc7a35tcpg236-1" LaunchTime="1687442160" LaunchIncrCheckpoint="$PSRCDIR/utils_1/imports/synth_1/top.dcp">
   <File Type="PA-TCL" Name="top.tcl"/>
+  <File Type="RDS-PROPCONSTRS" Name="top_drc_synth.rpt"/>
   <File Type="REPORTS-TCL" Name="top_reports.tcl"/>
   <File Type="RDS-RDS" Name="top.vds"/>
   <File Type="RDS-UTIL" Name="top_utilization_synth.rpt"/>
   <File Type="RDS-UTIL-PB" Name="top_utilization_synth.pb"/>
   <File Type="RDS-DCP" Name="top.dcp"/>
+  <File Type="VDS-TIMINGSUMMARY" Name="top_timing_summary_synth.rpt"/>
+  <File Type="VDS-TIMING-PB" Name="top_timing_summary_synth.pb"/>
   <FileSet Name="sources" Type="DesignSrcs" RelSrcDir="$PSRCDIR/sources_1" RelGenDir="$PGENDIR/sources_1">
     <Filter Type="Srcs"/>
-    <File Path="$PSRCDIR/sources_1/new/adrmux2.v">
-      <FileInfo>
-        <Attr Name="ImportPath" Val="$PPRDIR/../CPU_SOC/CPU_SOC.srcs/sources_1/new/adrmux2.v"/>
-        <Attr Name="ImportTime" Val="1656665670"/>
-        <Attr Name="UsedIn" Val="synthesis"/>
-        <Attr Name="UsedIn" Val="implementation"/>
-        <Attr Name="UsedIn" Val="simulation"/>
-      </FileInfo>
-    </File>
     <File Path="$PSRCDIR/sources_1/new/alu.v">
       <FileInfo>
         <Attr Name="ImportPath" Val="$PPRDIR/../CPU_SOC/CPU_SOC.srcs/sources_1/new/alu.v"/>
@@ -44,37 +38,10 @@
         <Attr Name="UsedIn" Val="simulation"/>
       </FileInfo>
     </File>
-    <File Path="$PSRCDIR/sources_1/new/datamux4.v">
-      <FileInfo>
-        <Attr Name="ImportPath" Val="$PPRDIR/../CPU_SOC/CPU_SOC.srcs/sources_1/new/datamux4.v"/>
-        <Attr Name="ImportTime" Val="1656556950"/>
-        <Attr Name="UsedIn" Val="synthesis"/>
-        <Attr Name="UsedIn" Val="implementation"/>
-        <Attr Name="UsedIn" Val="simulation"/>
-      </FileInfo>
-    </File>
     <File Path="$PSRCDIR/sources_1/new/datapath.v">
       <FileInfo>
         <Attr Name="ImportPath" Val="$PPRDIR/../CPU_SOC/CPU_SOC.srcs/sources_1/new/datapath.v"/>
         <Attr Name="ImportTime" Val="1656664732"/>
-        <Attr Name="UsedIn" Val="synthesis"/>
-        <Attr Name="UsedIn" Val="implementation"/>
-        <Attr Name="UsedIn" Val="simulation"/>
-      </FileInfo>
-    </File>
-    <File Path="$PSRCDIR/sources_1/new/digital.v">
-      <FileInfo>
-        <Attr Name="ImportPath" Val="$PPRDIR/../CPU_SOC/CPU_SOC.srcs/sources_1/new/digital.v"/>
-        <Attr Name="ImportTime" Val="1656661050"/>
-        <Attr Name="UsedIn" Val="synthesis"/>
-        <Attr Name="UsedIn" Val="implementation"/>
-        <Attr Name="UsedIn" Val="simulation"/>
-      </FileInfo>
-    </File>
-    <File Path="$PSRCDIR/sources_1/new/digital_trans.v">
-      <FileInfo>
-        <Attr Name="ImportPath" Val="$PPRDIR/../CPU_SOC/CPU_SOC.srcs/sources_1/new/digital_trans.v"/>
-        <Attr Name="ImportTime" Val="1656660354"/>
         <Attr Name="UsedIn" Val="synthesis"/>
         <Attr Name="UsedIn" Val="implementation"/>
         <Attr Name="UsedIn" Val="simulation"/>
@@ -102,15 +69,6 @@
       <FileInfo>
         <Attr Name="ImportPath" Val="$PPRDIR/../CPU_SOC/CPU_SOC.srcs/sources_1/new/flopenr.v"/>
         <Attr Name="ImportTime" Val="1656665638"/>
-        <Attr Name="UsedIn" Val="synthesis"/>
-        <Attr Name="UsedIn" Val="implementation"/>
-        <Attr Name="UsedIn" Val="simulation"/>
-      </FileInfo>
-    </File>
-    <File Path="$PSRCDIR/sources_1/new/memadr.v">
-      <FileInfo>
-        <Attr Name="ImportPath" Val="$PPRDIR/../CPU_SOC/CPU_SOC.srcs/sources_1/new/memadr.v"/>
-        <Attr Name="ImportTime" Val="1656556864"/>
         <Attr Name="UsedIn" Val="synthesis"/>
         <Attr Name="UsedIn" Val="implementation"/>
         <Attr Name="UsedIn" Val="simulation"/>
@@ -161,6 +119,13 @@
         <Attr Name="UsedIn" Val="simulation"/>
       </FileInfo>
     </File>
+    <File Path="$PSRCDIR/sources_1/new/ram.v">
+      <FileInfo>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
     <File Path="$PSRCDIR/sources_1/new/regfile.v">
       <FileInfo>
         <Attr Name="ImportPath" Val="$PPRDIR/../CPU_SOC/CPU_SOC.srcs/sources_1/new/regfile.v"/>
@@ -170,10 +135,8 @@
         <Attr Name="UsedIn" Val="simulation"/>
       </FileInfo>
     </File>
-    <File Path="$PSRCDIR/sources_1/new/zerodetect.v">
+    <File Path="$PSRCDIR/sources_1/new/rom.v">
       <FileInfo>
-        <Attr Name="ImportPath" Val="$PPRDIR/../CPU_SOC/CPU_SOC.srcs/sources_1/new/zerodetect.v"/>
-        <Attr Name="ImportTime" Val="1656666604"/>
         <Attr Name="UsedIn" Val="synthesis"/>
         <Attr Name="UsedIn" Val="implementation"/>
         <Attr Name="UsedIn" Val="simulation"/>
@@ -188,11 +151,43 @@
         <Attr Name="UsedIn" Val="simulation"/>
       </FileInfo>
     </File>
-    <File Path="$PSRCDIR/sources_1/ip/ins_mem.coe">
+    <File Path="$PSRCDIR/sources_1/new/adrmux2.v">
       <FileInfo>
-        <Attr Name="ImportPath" Val="$PPRDIR/../CPU_SOC/CPU_SOC.srcs/sources_1/ip/ins_mem.coe"/>
-        <Attr Name="ImportTime" Val="1656695834"/>
+        <Attr Name="AutoDisabled" Val="1"/>
+        <Attr Name="ImportPath" Val="$PPRDIR/../CPU_SOC/CPU_SOC.srcs/sources_1/new/adrmux2.v"/>
+        <Attr Name="ImportTime" Val="1656665670"/>
         <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PSRCDIR/sources_1/new/zerodetect.v">
+      <FileInfo>
+        <Attr Name="AutoDisabled" Val="1"/>
+        <Attr Name="ImportPath" Val="$PPRDIR/../CPU_SOC/CPU_SOC.srcs/sources_1/new/zerodetect.v"/>
+        <Attr Name="ImportTime" Val="1656666604"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PSRCDIR/sources_1/new/datamux4.v">
+      <FileInfo>
+        <Attr Name="AutoDisabled" Val="1"/>
+        <Attr Name="ImportPath" Val="$PPRDIR/../CPU_SOC/CPU_SOC.srcs/sources_1/new/datamux4.v"/>
+        <Attr Name="ImportTime" Val="1656556950"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
+        <Attr Name="UsedIn" Val="simulation"/>
+      </FileInfo>
+    </File>
+    <File Path="$PSRCDIR/sources_1/new/memadr.v">
+      <FileInfo>
+        <Attr Name="AutoDisabled" Val="1"/>
+        <Attr Name="ImportPath" Val="$PPRDIR/../CPU_SOC/CPU_SOC.srcs/sources_1/new/memadr.v"/>
+        <Attr Name="ImportTime" Val="1656556864"/>
+        <Attr Name="UsedIn" Val="synthesis"/>
+        <Attr Name="UsedIn" Val="implementation"/>
         <Attr Name="UsedIn" Val="simulation"/>
       </FileInfo>
     </File>
@@ -202,7 +197,7 @@
       <Option Name="TopAutoSet" Val="TRUE"/>
     </Config>
   </FileSet>
-  <FileSet Name="constrs_in" Type="Constrs" RelSrcDir="$PSRCDIR/constrs_1">
+  <FileSet Name="constrs_in" Type="Constrs" RelSrcDir="$PSRCDIR/constrs_1" RelGenDir="$PGENDIR/constrs_1">
     <Filter Type="Constrs"/>
     <File Path="$PSRCDIR/constrs_1/new/con1.xdc">
       <FileInfo>
@@ -216,7 +211,7 @@
       <Option Name="ConstrsType" Val="XDC"/>
     </Config>
   </FileSet>
-  <FileSet Name="utils" Type="Utils" RelSrcDir="$PSRCDIR/utils_1">
+  <FileSet Name="utils" Type="Utils" RelSrcDir="$PSRCDIR/utils_1" RelGenDir="$PGENDIR/utils_1">
     <Filter Type="Utils"/>
     <File Path="$PSRCDIR/utils_1/imports/synth_1/top.dcp">
       <FileInfo>
@@ -236,6 +231,4 @@
     <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2022"/>
     <Step Id="synth_design"/>
   </Strategy>
-  <BlockFileSet Type="BlockSrcs" Name="dat_mem"/>
-  <BlockFileSet Type="BlockSrcs" Name="ins_mem"/>
 </GenRun>
