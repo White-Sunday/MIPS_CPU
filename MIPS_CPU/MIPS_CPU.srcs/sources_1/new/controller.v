@@ -52,18 +52,13 @@ module controller(
 
     //状态码
     //取指、译指阶段状态（高位000）
-    parameter FETCH1 = 8'b000_00000;   //取指令（包括下一周期）
-    parameter FETCH2 = 8'b000_00001;   //取指令、pc+1、ir_write <= 1
-    parameter DECODE = 8'b000_00010;   //解析指令（ir_write <= 1且clk上升沿到来指令写入ir）
+    parameter FETCH = 8'b000_00000;    //取指令
+    parameter DECODE = 8'b000_00001;   //解析指令（ir_write <= 1且clk上升沿到来指令写入ir）
     //访存型I型指令指令状态（高位001）
     parameter MEMADR = 8'b001_00000;   //计算aluresult = rs + offset16，下一周期到来aluout = aluresult
-    parameter LWRD1 = 8'b001_00001;    //addr_sel <= 1，这一信号和aluout要持续三个节拍，因为存储器要两个clk上升沿才能完成数据的读取
-    parameter LWRD2 = 8'b001_00010;
-    parameter LWRD3 = 8'b001_00011;
-    parameter LWWR = 8'b001_00100;     //写入寄存器，由于时钟的原因，下一个clk上升沿到来时才会成功写入
-    parameter SWWR1 = 8'b001_00101;    //计算aluresult = rs + offset16，addr_sel <= 1
-    parameter SWWR2 = 8'b001_00110;
-    parameter SWWR3 = 8'b001_00111;
+    parameter LWMEM = 8'b001_00001;
+    parameter LWWR = 8'b001_00010;
+    parameter SWWR = 8'b001_00011;     //计算aluresult = rs + offset16，addr_sel <= 1
     parameter SB = 8'b001_01000;
     parameter SH = 8'b001_01001;
     //运算型I型指令状态（高位010）
@@ -108,10 +103,9 @@ module controller(
     parameter RTYPEWR = 8'b100_11111;  //结果写入寄存器，寄存器地址经由reg_write_addr_sel <= 2'b01指向rd提供地址，下一个clk上升沿到来成功写入
     //J型指令状态（高位101）
     parameter JEX = 8'b101_00000;
-    parameter JALEX1 = 8'b101_00001;
-    parameter JALEX2 = 8'b101_00010;
-    parameter JWAIT1 = 8'b101_11110;   //pc值改变后，需要等待三个节拍，也就是两个clk上升沿（包括FETCH1）完成指令的读取
-    parameter JWAIT2 = 8'b101_11111;
+    parameter JALEX = 8'b101_00001;
+    parameter JALWR = 8'b101_00010;
+    parameter PCWAIT = 8'b101_11111;   //专门用来等待pc完成变化的节拍
     
     //操作码
     parameter ADDI = 6'b001000; 
@@ -133,15 +127,14 @@ module controller(
 
     //节拍状态初始化与状态转变
     always @(posedge clk)
-        if(reset) state <= FETCH1;
+        if(reset) state <= FETCH;
         else state <= next_state;
 
     //下一节拍状态
     always @(*) begin
         case(state)
             //取指周期状态
-            FETCH1: next_state = FETCH2;
-            FETCH2: next_state = DECODE;
+            FETCH: next_state = DECODE;
             //译指周期状态
             DECODE: case(op)
                         LW: next_state = MEMADR;
@@ -151,8 +144,7 @@ module controller(
                                 SLL: next_state = SLLEX;
                                 SRL: next_state = SRLEX;
                                 JR:  next_state = JREX;
-                                default: next_state = RTYPEEX;
-                                //这里的default是指add等典型的R型指令
+                                default: next_state = RTYPEEX;  //这里的default是指add等典型的R型指令
                             endcase
                         BEQ:  next_state = BEQEX;
                         BGTZ: next_state = BGTZEX;
@@ -162,29 +154,23 @@ module controller(
                         ORI:  next_state = ORIEX;
                         BNE:  next_state = BNEEX;
                         J:    next_state = JEX;
-                        JAL:  next_state = JALEX1;
-                        default: next_state = FETCH1;
-                        //default应该永远不会发生
+                        JAL:  next_state = JALEX;
+                        default: next_state = FETCH;    //default应该永远不会发生
                     endcase
             //访存指令状态
             MEMADR: case(op)
-                        LW:   next_state = LWRD1;
-                        SW:   next_state = SWWR1;
-                        default: next_state = FETCH1;
-                        //default应该永远不会发生
+                        LW:   next_state = LWMEM;
+                        SW:   next_state = SWWR;
+                        default: next_state = FETCH;    //default应该永远不会发生
                     endcase
             //lw    
-            LWRD1:  next_state = LWRD2;
-            LWRD2:  next_state = LWRD3;
-            LWRD3:  next_state = LWWR;
-            LWWR:   next_state = FETCH1;
+            LWMEM:  next_state = LWWR;      //访存-数据准备好，MDR在下一拍改变
+            LWWR:   next_state = FETCH;     //写回-真正写进入还得在下一拍
             //sw
-            SWWR1:  next_state = SWWR2;
-            SWWR2:  next_state = SWWR3;
-            SWWR3:  next_state = FETCH1;
+            SWWR:   next_state = FETCH;     //写回-mem_write_data在上一拍已经准备好了，这一排改变信号，真正写入在下一拍
             //r
             RTYPEEX: next_state = RTYPEWR;
-            RTYPEWR: next_state = FETCH1;
+            RTYPEWR: next_state = FETCH;
             //srl
             SRLEX:  next_state = RTYPEWR;
             //sll
@@ -192,11 +178,11 @@ module controller(
             //jr
             JREX:   next_state = RTYPEWR;
             //beq
-            BEQEX:  next_state = JWAIT1;  //地址改变后需要有足够的时间取指令
+            BEQEX:  next_state = PCWAIT;    //还需要一拍来改变PC
             //bgtz
-            BGTZEX: next_state = JWAIT1;  //地址改变后需要有足够的时间取指令
+            BGTZEX: next_state = PCWAIT;    //还需要一拍来改变PC
             //bne
-            BNEEX:  next_state = JWAIT1;  //地址改变后需要有足够的时间取指令
+            BNEEX:  next_state = PCWAIT;    //还需要一拍来改变PC
             //i型
             //andi
             ANDIEX: next_state = ITYPEWR;
@@ -207,18 +193,16 @@ module controller(
             //lui
             LUIEX:  next_state = ITYPEWR;
             //i
-            ITYPEWR: next_state = FETCH1;
+            ITYPEWR: next_state = FETCH;
             //j
-            JEX:    next_state = JWAIT1;
+            JEX:    next_state = PCWAIT;
             //jal
-            JALEX1: next_state = JALEX2;
-            JALEX2: next_state = JWAIT1;
-            //jwait
-            JWAIT1: next_state = JWAIT2;
-            JWAIT2: next_state = FETCH1;
-
-            default: next_state = FETCH1;
+            JALEX: next_state = JALWR;
+            JALWR: next_state = PCWAIT;
+            //pcwait
+            PCWAIT: next_state = FETCH;
             //default应该永远不会发生
+            default: next_state = FETCH;
         endcase
     end
 
@@ -237,12 +221,10 @@ module controller(
         addr_sel = 0;
         reg_write_sel = 0;
         case(state)
-            FETCH1: begin 
-            end
-            FETCH2: begin
+            FETCH: begin
                 ir_write = 1;
                 alu_srcb_sel = 3'b001;
-                pc_write = 1;    
+                pc_write = 1;
             end
             DECODE: begin
                 alu_op = 3'b000;
@@ -252,36 +234,14 @@ module controller(
                 alu_srca_sel = 2'b01;
                 alu_srcb_sel = 3'b010;
             end
-            LWRD1: begin
-                alu_srca_sel = 2'b01;
-                alu_srcb_sel = 3'b010;
-                addr_sel = 1;
-            end
-            LWRD2: begin
-                alu_srca_sel = 2'b01;
-                alu_srcb_sel = 3'b010;
-                addr_sel = 1;
-            end
-            LWRD3: begin
+            LWMEM: begin
                 addr_sel = 1;
             end
             LWWR: begin
                 reg_write = 1;
                 reg_write_sel = 1;
             end
-            SWWR1: begin
-                alu_srca_sel = 2'b01;
-                alu_srcb_sel = 3'b010;
-                mem_write = 1;
-                addr_sel = 1;
-            end
-            SWWR2: begin
-                alu_srca_sel = 2'b01;
-                alu_srcb_sel = 3'b010;
-                mem_write = 1;
-                addr_sel = 1;
-            end
-            SWWR3: begin  
+            SWWR: begin
                 mem_write = 1;
                 addr_sel = 1;
             end
@@ -314,8 +274,8 @@ module controller(
                 pc_src_sel = 2'b01;
             end
             BGTZEX: begin
-                alu_op = 3'b100;
                 alu_srca_sel = 2'b01;
+                alu_op = 3'b100;
                 pc_write_cond = 1;
                 pc_src_sel = 2'b01;
             end
@@ -353,11 +313,11 @@ module controller(
                 pc_write = 1;
                 pc_src_sel = 2'b10;
             end
-            JALEX1: begin
+            JALEX: begin
                 alu_srcb_sel = 3'b001;
                 alu_op = 3'b000;
             end
-            JALEX2: begin
+            JALWR: begin
                 reg_write_addr_sel = 2'b10;
                 reg_write = 1;
                 // alu_op <= 3'b000;
@@ -365,10 +325,7 @@ module controller(
                 pc_write = 1;
                 pc_src_sel = 2'b10;
             end
-            JWAIT1: begin
-
-            end
-            JWAIT2: begin
+            PCWAIT: begin
 
             end
         endcase

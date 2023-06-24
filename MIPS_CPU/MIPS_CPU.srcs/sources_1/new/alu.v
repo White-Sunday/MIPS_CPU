@@ -35,9 +35,9 @@ module alu#(parameter WIDTH=32)(
         case (alu_cont[3:0])
             4'b0000: result = a+b;
             4'b0001: result = a&b;
-            4'b0010: result = a+b2;
-            4'b0011: result = (a[31]==0&&a!=0)?0:1;
-            4'b0100: result = (a==b);
+            4'b0010: result = a+b2;                     //beq
+            4'b0011: result = (a==b);                   //bne
+            4'b0100: result = (a[31]==0&&a!=0)?0:1;     //bgtz
             4'b0101: result = (a+b);
             4'b0110: result = (a|b);
             4'b0111: result = (b<<a);

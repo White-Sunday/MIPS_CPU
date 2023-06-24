@@ -31,8 +31,8 @@ module alucontrol(
             3'b000: alu_cont = 4'b0000;  //add for lw/sw/addi/jal
             3'b001: alu_cont = 4'b0001;  //andi
             3'b010: alu_cont = 4'b0010;  //beq
-            3'b011: alu_cont = 4'b0100;  //bne
-            3'b100: alu_cont = 4'b0011;  //bgtz
+            3'b011: alu_cont = 4'b0011;  //bne
+            3'b100: alu_cont = 4'b0100;  //bgtz
             3'b101: alu_cont = 4'b0101;  //lui
             3'b110: alu_cont = 4'b0110;  //ori
             default:

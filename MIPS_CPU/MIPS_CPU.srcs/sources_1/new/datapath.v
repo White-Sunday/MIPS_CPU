@@ -106,9 +106,9 @@ module datapath #(parameter WIDTH=32, ADDR=16, REGBITS=5, CONST_ZERO = 32'b0, CO
     //alu计算数来源2八路选择器
     mux8#(WIDTH) src2_mux(b,CONST_ONE,offset16,offsetx4,offsetu,offseth,CONST_ZERO,CONST_ZERO,alu_srcb_sel,src2);
     //alu
-    alu #(WIDTH) alunit(src1,src2,alu_cont,alu_result);
+    alu #(WIDTH) alu_unit(src1,src2,alu_cont,alu_result);
     //alu输出结果D触发器，clk上升沿值改变
-    flop #(WIDTH) res(clk,alu_result,alu_out);
+    flop #(WIDTH) alu_res_reg(clk,alu_result,alu_out);
     //alu计算结果是否为0
     assign zero = (alu_result==0);
 
