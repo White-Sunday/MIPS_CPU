@@ -21,7 +21,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module datapath #(parameter WIDTH=32, ADDR=16, REGBITS=5, CONST_ZERO = 32'b0, CONST_ONE = 32'b100)(
+module datapath #(parameter WIDTH=32, ADDR=16, REGBITS=5, CONST_ZERO = 32'b0, CONST_FOUR = 32'b100)(
     input clk, reset,
     input [WIDTH-1:0] mem_data_in,
     input reg_write,
@@ -104,7 +104,7 @@ module datapath #(parameter WIDTH=32, ADDR=16, REGBITS=5, CONST_ZERO = 32'b0, CO
     //alu计算数来源1四路选择器
     mux4 #(WIDTH) src1_mux(pc,a,shamt,CONST_ZERO,alu_srca_sel,src1);
     //alu计算数来源2八路选择器
-    mux8#(WIDTH) src2_mux(b,CONST_ONE,offset16,offsetx4,offsetu,offseth,CONST_ZERO,CONST_ZERO,alu_srcb_sel,src2);
+    mux8#(WIDTH) src2_mux(b,CONST_FOUR,offset16,offsetx4,offsetu,offseth,CONST_ZERO,CONST_ZERO,alu_srcb_sel,src2);
     //alu
     alu #(WIDTH) alu_unit(src1,src2,alu_cont,alu_result);
     //alu输出结果D触发器，clk上升沿值改变

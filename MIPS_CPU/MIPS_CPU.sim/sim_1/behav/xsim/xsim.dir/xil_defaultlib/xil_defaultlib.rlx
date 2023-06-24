@@ -6,7 +6,7 @@ D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU/MIPS_CPU.sim/sim_1/behav/xsim/glbl.v,1649
 D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU/MIPS_CPU.srcs/sim_1/new/top_bench.v,1687156250,verilog,,,,top_bench,,,,,,,,
 D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU/MIPS_CPU.srcs/sources_1/new/alu.v,1687590686,verilog,,D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU/MIPS_CPU.srcs/sources_1/new/alucontrol.v,,alu,,,,,,,,
 D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU/MIPS_CPU.srcs/sources_1/new/alucontrol.v,1687588116,verilog,,D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU/MIPS_CPU.srcs/sources_1/new/controller.v,,alucontrol,,,,,,,,
-D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU/MIPS_CPU.srcs/sources_1/new/controller.v,1687439845,verilog,,D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU/MIPS_CPU.srcs/sources_1/new/datapath.v,,controller,,,,,,,,
+D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU/MIPS_CPU.srcs/sources_1/new/controller.v,1687610878,verilog,,D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU/MIPS_CPU.srcs/sources_1/new/datapath.v,,controller,,,,,,,,
 D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU/MIPS_CPU.srcs/sources_1/new/datapath.v,1687445832,verilog,,D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU/MIPS_CPU.srcs/sources_1/new/flop.v,,datapath,,,,,,,,
 D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU/MIPS_CPU.srcs/sources_1/new/flop.v,1656665452,verilog,,D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU/MIPS_CPU.srcs/sources_1/new/flopen.v,,flop,,,,,,,,
 D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU/MIPS_CPU.srcs/sources_1/new/flopen.v,1656665644,verilog,,D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU/MIPS_CPU.srcs/sources_1/new/flopenr.v,,flopen,,,,,,,,

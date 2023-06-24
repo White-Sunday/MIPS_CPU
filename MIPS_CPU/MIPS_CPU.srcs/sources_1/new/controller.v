@@ -58,7 +58,7 @@ module controller(
     parameter MEMADR = 8'b001_00000;   //计算aluresult = rs + offset16，下一周期到来aluout = aluresult
     parameter LWMEM = 8'b001_00001;
     parameter LWWR = 8'b001_00010;
-    parameter SWWR = 8'b001_00011;     //计算aluresult = rs + offset16，addr_sel <= 1
+    parameter SWMEM = 8'b001_00011;     //计算aluresult = rs + offset16，addr_sel <= 1
     parameter SB = 8'b001_01000;
     parameter SH = 8'b001_01001;
     //运算型I型指令状态（高位010）
@@ -160,14 +160,14 @@ module controller(
             //访存指令状态
             MEMADR: case(op)
                         LW:   next_state = LWMEM;
-                        SW:   next_state = SWWR;
+                        SW:   next_state = SWMEM;
                         default: next_state = FETCH;    //default应该永远不会发生
                     endcase
             //lw    
             LWMEM:  next_state = LWWR;      //访存-数据准备好，MDR在下一拍改变
             LWWR:   next_state = FETCH;     //写回-真正写进入还得在下一拍
             //sw
-            SWWR:   next_state = FETCH;     //写回-mem_write_data在上一拍已经准备好了，这一排改变信号，真正写入在下一拍
+            SWMEM:   next_state = FETCH;     //写回-mem_write_data在上一拍已经准备好了，这一排改变信号，真正写入在下一拍
             //r
             RTYPEEX: next_state = RTYPEWR;
             RTYPEWR: next_state = FETCH;
@@ -241,7 +241,7 @@ module controller(
                 reg_write = 1;
                 reg_write_sel = 1;
             end
-            SWWR: begin
+            SWMEM: begin
                 mem_write = 1;
                 addr_sel = 1;
             end
