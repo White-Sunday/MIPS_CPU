@@ -12,6 +12,11 @@
 // Description: CPU（controller+alu_control+datapath）
 // controller可以看做CU，ALU在datapath里
 // 已实现部分mips指令集:
+// lw
+// sw
+// sb
+// sh
+// 
 // add
 // addi
 // andi
@@ -26,8 +31,6 @@
 // sll
 // slt
 // sub
-// lw
-// sw
 // Dependencies: 
 // 
 // Revision:
@@ -54,9 +57,9 @@ module mips #(parameter WIDTH=32, ADDR=16, REGBITS=5)(
     wire pc_en;             //pc触发器使能信号，next_pc->pc
     wire ir_write;          //ir写信号
     wire reg_write;         //寄存器写信号
-    wire reg_write_sel;     //寄存器组写入数据选择信号
-
+    wire [1:0] reg_write_data_sel;     //寄存器组写入数据选择信号
     wire [1:0] reg_write_addr_sel;      //寄存器组地址reg_write_addr四路选择
+    wire [1:0] mem_write_data_sel;      //存储器写入数据mem_write_data四路选择
     wire [1:0] pc_src_sel;
     wire [2:0] alu_op;
     wire [1:0] alu_srca_sel;
@@ -70,17 +73,18 @@ module mips #(parameter WIDTH=32, ADDR=16, REGBITS=5)(
         .op(instr[31:26]),
         .func(instr[5:0]),
         .zero(zero),
-        .mem_write(mem_write),
-        .reg_write(reg_write),
-        .reg_write_sel(reg_write_sel),
-        .addr_sel(addr_sel),
         .ir_write(ir_write),
-        .pc_en(pc_en),
-        .reg_write_addr_sel(reg_write_addr_sel),
         .pc_src_sel(pc_src_sel),
+        .pc_en(pc_en),
         .alu_srca_sel(alu_srca_sel),
         .alu_srcb_sel(alu_srcb_sel),
-        .alu_op(alu_op));
+        .alu_op(alu_op),
+        .addr_sel(addr_sel),
+        .mem_write_data_sel(mem_write_data_sel),
+        .mem_write(mem_write),
+        .reg_write_data_sel(reg_write_data_sel),
+        .reg_write_addr_sel(reg_write_addr_sel),
+        .reg_write(reg_write));
     
     //运算器控制alu_control 根据alu_op和指令操作码，输出信号控制ALU进行何种运算
     alucontrol ac(alu_op, instr[5:0], alu_cont);
@@ -90,16 +94,17 @@ module mips #(parameter WIDTH=32, ADDR=16, REGBITS=5)(
         .clk(clk),
         .reset(reset),
         .mem_data_in(mem_read_data),
-        .reg_write(reg_write),
-        .reg_write_sel(reg_write_sel),
-        .addr_sel(addr_sel),
         .ir_write(ir_write),
-        .pc_en(pc_en),
-        .reg_write_addr_sel(reg_write_addr_sel),
         .pc_src_sel(pc_src_sel),
+        .pc_en(pc_en),
         .alu_srca_sel(alu_srca_sel),
         .alu_srcb_sel(alu_srcb_sel),
         .alu_cont(alu_cont),
+        .addr_sel(addr_sel),
+        .mem_write_data_sel(mem_write_data_sel),
+        .reg_write_data_sel(reg_write_data_sel),
+        .reg_write_addr_sel(reg_write_addr_sel),
+        .reg_write(reg_write),
         .zero(zero),
         .instr(instr),
         .addr(addr),

@@ -35,17 +35,18 @@ module controller(
     input [5:0] op,         //操作码
     input [5:0] func,       //函数码
     input zero,             //alu计算结果是否为0信号
-    output reg mem_write,
-    output reg reg_write,
-    output reg reg_write_sel,
-    output reg addr_sel,
     output reg ir_write,
-    output pc_en,
-    output reg [1:0] reg_write_addr_sel, //寄存器地址多路选择控制信号
     output reg [1:0] pc_src_sel,
+    output pc_en,
     output reg [1:0] alu_srca_sel,
     output reg [2:0] alu_srcb_sel,
-    output reg [2:0] alu_op);
+    output reg [2:0] alu_op,
+    output reg addr_sel,
+    output reg [1:0] mem_write_data_sel,
+    output reg mem_write,
+    output reg [1:0] reg_write_data_sel,
+    output reg [1:0] reg_write_addr_sel,
+    output reg reg_write);
     
     reg [7:0] state, next_state;  //节拍状态、下一状态
     reg pc_write, pc_write_cond;
@@ -59,14 +60,20 @@ module controller(
     parameter LWMEM = 8'b001_00001;
     parameter LWWR = 8'b001_00010;
     parameter SWMEM = 8'b001_00011;     //计算aluresult = rs + offset16，addr_sel <= 1
-    parameter SB = 8'b001_01000;
-    parameter SH = 8'b001_01001;
+    parameter LBUEX = 8'b001_00100;
+    parameter LBUMEM = 8'b001_00101;
+    parameter LBUWR = 8'b001_00110;
+    parameter LHUEX = 8'b001_00111;
+    parameter LHUMEM = 8'b001_01000;
+    parameter LHUWR = 8'b001_01001;
+    parameter SBEX = 8'b001_01010;
+    parameter SBMEM = 8'b001_01011;
+    parameter SHEX = 8'b001_01100;
+    parameter SHMEM = 8'b001_01101;
     //运算型I型指令状态（高位010）
     parameter ADDIEX = 8'b010_00000;
     parameter ADDIUEX = 8'b010_00001;
     parameter ANDIEX = 8'b010_00010;
-    parameter LBUEX = 8'b010_00011;
-    parameter LHUEX = 8'b010_00100;
     parameter LUIEX = 8'b010_00100;
     parameter ORIEX = 8'b010_00101;
     parameter SLTIEX = 8'b010_00110;
@@ -108,6 +115,13 @@ module controller(
     parameter PCWAIT = 8'b101_11111;   //专门用来等待pc完成变化的节拍
     
     //操作码
+    parameter LW = 6'b100011;
+    parameter SW = 6'b101011;
+    parameter LBU = 6'b100100;
+    parameter LHU = 6'b100101;
+    parameter SB = 6'b101000;
+    parameter SH = 6'b101001;
+
     parameter ADDI = 6'b001000; 
     parameter ANDI = 6'b001100;
     parameter BEQ = 6'b000100;
@@ -116,9 +130,7 @@ module controller(
     parameter J = 6'b000010;
     parameter JAL = 6'b000011;
     parameter LUI = 6'b001111;
-    parameter LW = 6'b100011;
     parameter ORI = 6'b001101;
-    parameter SW = 6'b101011;
     parameter RTYPE = 6'b000000;
     parameter SLL = 6'b000000;
     parameter SRL = 6'b000010;
@@ -139,6 +151,10 @@ module controller(
             DECODE: case(op)
                         LW: next_state = MEMADR;
                         SW: next_state = MEMADR;
+                        LBU: next_state = LBUEX;
+                        LHU: next_state = LHUEX;
+                        SB: next_state = SBEX;
+                        SH: next_state = SHEX;
                         RTYPE: 
                             case(func)
                                 SLL: next_state = SLLEX;
@@ -157,17 +173,43 @@ module controller(
                         JAL:  next_state = JALEX;
                         default: next_state = FETCH;    //default应该永远不会发生
                     endcase
-            //访存指令状态
+            //访存型I型指令状态
+            //执行周期计算访存地址
             MEMADR: case(op)
-                        LW:   next_state = LWMEM;
-                        SW:   next_state = SWMEM;
+                        LW: next_state = LWMEM;
+                        SW: next_state = SWMEM;
                         default: next_state = FETCH;    //default应该永远不会发生
                     endcase
             //lw    
             LWMEM:  next_state = LWWR;      //访存-数据准备好，MDR在下一拍改变
             LWWR:   next_state = FETCH;     //写回-真正写进入还得在下一拍
             //sw
-            SWMEM:   next_state = FETCH;     //写回-mem_write_data在上一拍已经准备好了，这一排改变信号，真正写入在下一拍
+            SWMEM:  next_state = FETCH;    //写回-mem_write_data在上一拍已经准备好了，这一排改变信号，真正写入在下一拍
+            //lbu
+            LBUEX:  next_state = LBUMEM;
+            LBUMEM: next_state = LBUWR;
+            LBUWR:  next_state = FETCH;
+            //lhu
+            LHUEX:  next_state = LHUMEM;
+            LHUMEM: next_state = LHUWR;
+            LHUWR:  next_state = FETCH;
+            //sb
+            SBEX:   next_state = SBMEM;
+            SBMEM:  next_state = FETCH;
+            //sh
+            SHEX:   next_state = SHMEM;
+            SHMEM:  next_state = FETCH;
+            //运算型I型指令状态
+            //andi
+            ANDIEX: next_state = ITYPEWR;
+            //addi
+            ADDIEX: next_state = ITYPEWR;
+            //ori
+            ORIEX:  next_state = ITYPEWR;
+            //lui
+            LUIEX:  next_state = ITYPEWR;
+            //i
+            ITYPEWR: next_state = FETCH;
             //r
             RTYPEEX: next_state = RTYPEWR;
             RTYPEWR: next_state = FETCH;
@@ -184,16 +226,6 @@ module controller(
             //bne
             BNEEX:  next_state = PCWAIT;    //还需要一拍来改变PC
             //i型
-            //andi
-            ANDIEX: next_state = ITYPEWR;
-            //addi
-            ADDIEX: next_state = ITYPEWR;
-            //ori
-            ORIEX:  next_state = ITYPEWR;
-            //lui
-            LUIEX:  next_state = ITYPEWR;
-            //i
-            ITYPEWR: next_state = FETCH;
             //j
             JEX:    next_state = PCWAIT;
             //jal
@@ -209,42 +241,94 @@ module controller(
     always @(*) begin
         //每次执行该模块内容前，事先将下列信号置为0
         ir_write = 0;
+        pc_src_sel = 2'b00;
         pc_write = 0;
         pc_write_cond = 0;
-        reg_write = 0;
-        reg_write_addr_sel = 2'b00;
-        mem_write = 0;
         alu_srca_sel = 2'b00;
         alu_srcb_sel = 3'b000;
         alu_op = 3'b000;
-        pc_src_sel = 2'b00;
         addr_sel = 0;
-        reg_write_sel = 0;
+        mem_write_data_sel = 2'b00;
+        mem_write = 0;
+        reg_write_addr_sel = 2'b00;
+        reg_write_data_sel = 2'b00;
+        reg_write = 0;
         case(state)
+            //取指周期状态
             FETCH: begin
                 ir_write = 1;
                 alu_srcb_sel = 3'b001;
                 pc_write = 1;
             end
+            //译指周期状态
             DECODE: begin
-                alu_op = 3'b000;
                 alu_srcb_sel = 3'b011;
             end
+            //访存型I型指令指令状态
+            //执行周期计算访存地址
             MEMADR: begin
                 alu_srca_sel = 2'b01;
                 alu_srcb_sel = 3'b010;
             end
+            //lw
             LWMEM: begin
                 addr_sel = 1;
             end
             LWWR: begin
+                reg_write_data_sel = 2'b01;
                 reg_write = 1;
-                reg_write_sel = 1;
             end
+            //sw
             SWMEM: begin
+                addr_sel = 1;
                 mem_write = 1;
+            end
+            //lbu
+            LBUEX: begin
+                alu_srca_sel = 2'b01;
+                alu_srcb_sel = 3'b010;
+            end
+            LBUMEM: begin
                 addr_sel = 1;
             end
+            LBUWR: begin
+                reg_write_data_sel = 2'b10;
+                reg_write = 1;
+            end
+            //lhu
+            LHUEX: begin
+                alu_srca_sel = 2'b01;
+                alu_srcb_sel = 3'b010;
+            end
+            LHUMEM: begin
+                addr_sel = 1;
+            end
+            LHUWR: begin
+                reg_write_data_sel = 2'b11;
+                reg_write = 1;
+            end
+            //sb
+            SBEX: begin
+                alu_srca_sel = 2'b01;
+                alu_srcb_sel = 3'b010;
+            end
+            SBMEM: begin
+                addr_sel = 1;
+                mem_write_data_sel = 2'b01;
+                mem_write = 1;
+            end
+            //sh
+            SHEX: begin
+                alu_srca_sel = 2'b01;
+                alu_srcb_sel = 3'b010;
+            end
+            SHMEM: begin
+                addr_sel = 1;
+                mem_write_data_sel = 2'b10;
+                mem_write = 1;
+            end
+
+
             RTYPEEX: begin
                 alu_op = 3'b111;
                 alu_srca_sel = 2'b01;
