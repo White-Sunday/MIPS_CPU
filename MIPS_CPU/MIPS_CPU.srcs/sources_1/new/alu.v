@@ -26,23 +26,39 @@ module alu#(parameter WIDTH=32)(
     input [3:0] alu_cont,
     output reg [WIDTH-1:0] result);
 
-    wire [WIDTH-1:0] b2, sub, slt;
+    wire [WIDTH-1:0] b2;
+    wire [WIDTH-1:0] add_res;
+    wire [WIDTH-1:0] sub_res;
+    wire [WIDTH-1:0] and_res;
+    wire [WIDTH-1:0] or_res;
+    wire [WIDTH-1:0] xor_res;
+    wire [WIDTH-1:0] slt;
+    wire [WIDTH-1:0] sltu;
+    wire [WIDTH-1:0] sgt;
+
     assign b2 = ~b+1;
-    assign sub = a+b2;
-    assign slt = sub[WIDTH-1];
+    assign add_res = a+b;
+    assign sub_res = a+b2;
+    assign and_res = a&b;
+    assign or_res = a|b;
+    assign xor_res = a^b;
+    assign slt = sub_res[WIDTH-1]?32'h1:32'h0;  //有符号比较 set less than
+    assign sltu = (a<b)?32'h1:32'h0;        //无符号比较
+    assign sgt = sub_res[WIDTH-1]?32'h0:32'h1;  //有符号比较 set greater than
 
     always @(*)begin
         case (alu_cont[3:0])
-            4'b0000: result = a+b;
-            4'b0001: result = a&b;
-            4'b0010: result = a+b2;                     //beq
-            4'b0011: result = (a==b);                   //bne
-            4'b0100: result = (a[31]==0&&a!=0)?0:1;     //bgtz
-            4'b0101: result = (a+b);
-            4'b0110: result = (a|b);
-            4'b0111: result = (b<<a);
-            4'b1000: result = (b>>a);
-            4'b1001: result = slt;
+            4'b0000: result = add_res;                  //add
+            4'b0001: result = sub_res;                  //sub
+            4'b0010: result = and_res;                  //and
+            4'b0011: result = or_res;                   //or
+            4'b0100: result = xor_res;                  //xor
+            4'b0101: result = (a==b);                   //(a==b)?1:0
+            4'b0110: result = slt;                      //(a<b)?1:0
+            4'b0111: result = sltu;                     //(a<b)?1:0 (u)
+            4'b1000: result = sgt;                      //(a>b)?1:0
+            4'b1001: result = (b<<a);                   //sll
+            4'b1010: result = (b>>a);                   //srl
         endcase
     end
 endmodule

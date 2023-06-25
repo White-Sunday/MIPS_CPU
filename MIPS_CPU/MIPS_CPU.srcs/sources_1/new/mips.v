@@ -14,12 +14,17 @@
 // 已实现部分mips指令集:
 // lw
 // sw
+// lbu
+// lhu
 // sb
 // sh
-// 
-// add
 // addi
+// addiu
 // andi
+// lui
+//
+// add
+// 
 // beq
 // bgtz
 // bne
@@ -61,7 +66,7 @@ module mips #(parameter WIDTH=32, ADDR=16, REGBITS=5)(
     wire [1:0] reg_write_addr_sel;      //寄存器组地址reg_write_addr四路选择
     wire [1:0] mem_write_data_sel;      //存储器写入数据mem_write_data四路选择
     wire [1:0] pc_src_sel;
-    wire [2:0] alu_op;
+    wire [3:0] alu_op;
     wire [1:0] alu_srca_sel;
     wire [2:0] alu_srcb_sel;
     wire [3:0] alu_cont;    //alu_control输出运算模式（控制ALU进行加还是减）信号

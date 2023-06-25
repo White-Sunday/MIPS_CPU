@@ -40,7 +40,7 @@ module controller(
     output pc_en,
     output reg [1:0] alu_srca_sel,
     output reg [2:0] alu_srcb_sel,
-    output reg [2:0] alu_op,
+    output reg [3:0] alu_op,
     output reg addr_sel,
     output reg [1:0] mem_write_data_sel,
     output reg mem_write,
@@ -121,15 +121,16 @@ module controller(
     parameter LHU = 6'b100101;
     parameter SB = 6'b101000;
     parameter SH = 6'b101001;
-
     parameter ADDI = 6'b001000; 
+    parameter ADDIU = 6'b001001;
     parameter ANDI = 6'b001100;
+    parameter LUI = 6'b001111;
+
     parameter BEQ = 6'b000100;
     parameter BGTZ = 6'b000111;
     parameter BNE = 6'b000101;
     parameter J = 6'b000010;
     parameter JAL = 6'b000011;
-    parameter LUI = 6'b001111;
     parameter ORI = 6'b001101;
     parameter RTYPE = 6'b000000;
     parameter SLL = 6'b000000;
@@ -155,6 +156,9 @@ module controller(
                         LHU: next_state = LHUEX;
                         SB: next_state = SBEX;
                         SH: next_state = SHEX;
+                        ADDI: next_state = ADDIEX;
+                        ADDIU: next_state = ADDIUEX;
+                        LUI: next_state = LUIEX;
                         RTYPE: 
                             case(func)
                                 SLL: next_state = SLLEX;
@@ -164,14 +168,12 @@ module controller(
                             endcase
                         BEQ:  next_state = BEQEX;
                         BGTZ: next_state = BGTZEX;
-                        ADDI: next_state = ADDIEX;
                         ANDI: next_state = ANDIEX;
-                        LUI:  next_state = LUIEX;
                         ORI:  next_state = ORIEX;
                         BNE:  next_state = BNEEX;
                         J:    next_state = JEX;
                         JAL:  next_state = JALEX;
-                        default: next_state = FETCH;    //default应该永远不会发生
+                        default: next_state = FETCH;
                     endcase
             //访存型I型指令状态
             //执行周期计算访存地址
@@ -200,10 +202,12 @@ module controller(
             SHEX:   next_state = SHMEM;
             SHMEM:  next_state = FETCH;
             //运算型I型指令状态
-            //andi
-            ANDIEX: next_state = ITYPEWR;
             //addi
             ADDIEX: next_state = ITYPEWR;
+            //addiu
+            ADDIUEX: next_state = ITYPEWR;
+            //andi
+            ANDIEX: next_state = ITYPEWR;
             //ori
             ORIEX:  next_state = ITYPEWR;
             //lui
@@ -246,7 +250,7 @@ module controller(
         pc_write_cond = 0;
         alu_srca_sel = 2'b00;
         alu_srcb_sel = 3'b000;
-        alu_op = 3'b000;
+        alu_op = 4'b0000;
         addr_sel = 0;
         mem_write_data_sel = 2'b00;
         mem_write = 0;
@@ -327,10 +331,39 @@ module controller(
                 mem_write_data_sel = 2'b10;
                 mem_write = 1;
             end
+            //运算型I型指令状态
+            //addi
+            ADDIEX: begin
+                alu_op = 4'b0000;
+                alu_srca_sel = 2'b01;
+                alu_srcb_sel = 3'b010;
+            end
+            //addiu
+            ADDIUEX: begin
+                alu_op = 4'b0000;
+                alu_srca_sel = 2'b01;
+                alu_srcb_sel = 3'b010;
+            end
+            //andi
+            ANDIEX: begin
+                alu_op = 4'b0010;
+                alu_srca_sel = 2'b01;
+                alu_srcb_sel = 3'b100;
+            end
+            //lui
+            LUIEX: begin
+                alu_op = 4'b0000;
+                alu_srca_sel = 2'b11;
+                alu_srcb_sel = 3'b101;
+            end
+            //运算型I型指令写回状态
+            ITYPEWR: begin
+                reg_write = 1;
+            end
 
 
             RTYPEEX: begin
-                alu_op = 3'b111;
+                alu_op = 4'b1111;
                 alu_srca_sel = 2'b01;
             end
             RTYPEWR: begin
@@ -338,16 +371,16 @@ module controller(
                 reg_write = 1;
             end
             SRLEX: begin
-                alu_op = 3'b111;
+                alu_op = 4'b1111;
                 alu_srca_sel = 2'b10;
             end
             SLLEX: begin
-                alu_op = 3'b111;
+                alu_op = 4'b1111;
                 alu_srca_sel = 2'b10;
             end
             JREX: begin
                 pc_write = 1;
-                alu_op = 3'b111;
+                alu_op = 4'b1111;
                 alu_srca_sel = 2'b01;
                 alu_srcb_sel = 3'b110;
             end
@@ -369,29 +402,10 @@ module controller(
                 pc_write_cond = 1;
                 pc_src_sel = 2'b01;
             end
-            ANDIEX: begin
-                alu_op = 3'b001;
-                alu_srca_sel = 2'b01;
-                alu_srcb_sel = 3'b100;
-            end
-            ADDIEX: begin
-                alu_op = 3'b000;
-                //a+offset16
-                alu_srca_sel = 2'b01;
-                alu_srcb_sel = 3'b010;
-            end
             ORIEX: begin
                 alu_op = 3'b110;
                 alu_srca_sel = 2'b01;
                 alu_srcb_sel = 3'b100;
-            end
-            LUIEX: begin
-                alu_op = 3'b101;
-                alu_srca_sel = 2'b01;
-                alu_srcb_sel = 3'b101;
-            end
-            ITYPEWR: begin
-                reg_write = 1;
             end
             JEX: begin
                 pc_write = 1;
