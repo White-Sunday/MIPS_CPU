@@ -21,8 +21,11 @@
 // addi
 // addiu
 // andi
+// ori
+// xori
 // lui
-//
+// slti
+// sltiu
 // add
 // 
 // beq

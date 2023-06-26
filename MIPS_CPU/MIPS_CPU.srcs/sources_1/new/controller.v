@@ -74,11 +74,11 @@ module controller(
     parameter ADDIEX = 8'b010_00000;
     parameter ADDIUEX = 8'b010_00001;
     parameter ANDIEX = 8'b010_00010;
-    parameter LUIEX = 8'b010_00100;
-    parameter ORIEX = 8'b010_00101;
+    parameter ORIEX = 8'b010_00011;
+    parameter XORIEX = 8'b010_00100;
+    parameter LUIEX = 8'b010_00101;
     parameter SLTIEX = 8'b010_00110;
     parameter SLTIUEX = 8'b010_00111;
-    parameter XORIEX = 8'b010_01000;
     parameter ITYPEWR = 8'b010_11111;  //结果写入寄存器，寄存器地址默认reg_write_addr_sel <= 2'b00指向rt提供地址，下一个clk上升沿到来成功写入
     //条件分支型I型指令指令状态（高位011）
     parameter BEQEX = 8'b011_00000;
@@ -86,27 +86,19 @@ module controller(
     parameter BLTZEX = 8'b011_00010;
     parameter BNEEX = 8'b011_00011;
     //R型指令状态（高位100）
-    //典型R型指令（add，addu，and，sub）使用节拍：RTYPEEX + RTYPEWR
+    //典型R型指令（add，addu 等“rd = rs op rt”的）使用节拍：RTYPEEX + RTYPEWR
     //（高位100_0）
-    parameter ADDEX = 8'b100_0_0000;
-    parameter ADDUEX = 8'b100_0_0001;
-    parameter ANDEX = 8'b100_0_0010;
-    parameter NOREX = 8'b100_0_0010;
-    parameter OREX = 8'b100_0_0011;
+    parameter RTYPEEX = 8'b100_00000;
+    //非典型R型指令（sll，srl）使用节拍：XXEX + RTYPEWR
+    //（高位100_1）
     parameter SLLVEX = 8'b100_0_0100;
     parameter SLTEX = 8'b100_0_0101;
     parameter SLTUEX = 8'b100_0_0110;
     parameter SRAVEX = 8'b100_0_0111;
-    parameter SUBEX = 8'b100_0_1000;
-    parameter SUBUEX = 8'b100_0_1001;
-    parameter XOREX = 8'b100_0_1010;
-    //非典型R型指令（sll，srl）使用节拍：XXEX + RTYPEWR
-    //（高位100_1）
     parameter SLLEX = 8'b100_1_0010;
     parameter SRLEX = 8'b100_1_0011;
     parameter JREX = 8'b100_1_0100;
     parameter SRAEX = 8'b100_1_0101;
-    parameter RTYPEEX = 8'b100_11110;
     parameter RTYPEWR = 8'b100_11111;  //结果写入寄存器，寄存器地址经由reg_write_addr_sel <= 2'b01指向rd提供地址，下一个clk上升沿到来成功写入
     //J型指令状态（高位101）
     parameter JEX = 8'b101_00000;
@@ -124,15 +116,18 @@ module controller(
     parameter ADDI = 6'b001000; 
     parameter ADDIU = 6'b001001;
     parameter ANDI = 6'b001100;
+    parameter ORI = 6'b001101;
+    parameter XORI = 6'b001110;
     parameter LUI = 6'b001111;
+    parameter SLTI = 6'b001010;
+    parameter SLTIU = 6'b001011;
+    parameter RTYPE = 6'b000000;
 
     parameter BEQ = 6'b000100;
     parameter BGTZ = 6'b000111;
     parameter BNE = 6'b000101;
     parameter J = 6'b000010;
     parameter JAL = 6'b000011;
-    parameter ORI = 6'b001101;
-    parameter RTYPE = 6'b000000;
     parameter SLL = 6'b000000;
     parameter SRL = 6'b000010;
     parameter SLT = 6'b101010;
@@ -158,7 +153,12 @@ module controller(
                         SH: next_state = SHEX;
                         ADDI: next_state = ADDIEX;
                         ADDIU: next_state = ADDIUEX;
+                        ANDI: next_state = ANDIEX;
+                        ORI:  next_state = ORIEX;
+                        XORI: next_state = XORIEX;
                         LUI: next_state = LUIEX;
+                        SLTI: next_state = SLTIEX;
+                        SLTIU: next_state = SLTIUEX;
                         RTYPE: 
                             case(func)
                                 SLL: next_state = SLLEX;
@@ -168,8 +168,6 @@ module controller(
                             endcase
                         BEQ:  next_state = BEQEX;
                         BGTZ: next_state = BGTZEX;
-                        ANDI: next_state = ANDIEX;
-                        ORI:  next_state = ORIEX;
                         BNE:  next_state = BNEEX;
                         J:    next_state = JEX;
                         JAL:  next_state = JALEX;
@@ -210,12 +208,20 @@ module controller(
             ANDIEX: next_state = ITYPEWR;
             //ori
             ORIEX:  next_state = ITYPEWR;
+            //xori
+            XORIEX: next_state = ITYPEWR;
             //lui
             LUIEX:  next_state = ITYPEWR;
-            //i
+            //slti
+            SLTIEX: next_state = ITYPEWR;
+            //sltiu
+            SLTIUEX: next_state = ITYPEWR;
+            //i wr
             ITYPEWR: next_state = FETCH;
-            //r
+            //R型指令状态
+            //典型R型指令（add，addu，and，sub）使用节拍：RTYPEEX + RTYPEWR
             RTYPEEX: next_state = RTYPEWR;
+            //非典型R型指令（sll，srl）使用节拍：XXEX + RTYPEWR
             RTYPEWR: next_state = FETCH;
             //srl
             SRLEX:  next_state = RTYPEWR;
@@ -350,22 +356,49 @@ module controller(
                 alu_srca_sel = 2'b01;
                 alu_srcb_sel = 3'b100;
             end
+            //ori
+            ORIEX: begin
+                alu_op = 4'b0011;
+                alu_srca_sel = 2'b01;
+                alu_srcb_sel = 3'b100;
+            end
+            //xori
+            XORIEX: begin
+                alu_op = 4'b0100;
+                alu_srca_sel = 2'b01;
+                alu_srcb_sel = 3'b100;
+            end
             //lui
             LUIEX: begin
                 alu_op = 4'b0000;
                 alu_srca_sel = 2'b11;
                 alu_srcb_sel = 3'b101;
             end
+            //slti
+            SLTIEX: begin
+                alu_op = 4'b0111;
+                alu_srca_sel = 2'b01;
+                alu_srcb_sel = 3'b010;
+            end
+            //sltiu
+            SLTIUEX: begin
+                alu_op = 4'b1000;
+                alu_srca_sel = 2'b01;
+                alu_srcb_sel = 3'b010;
+            end
             //运算型I型指令写回状态
             ITYPEWR: begin
                 reg_write = 1;
             end
-
-
+            //R型指令状态
+            //典型R型指令（add，addu，and，sub）使用节拍：RTYPEEX + RTYPEWR
             RTYPEEX: begin
                 alu_op = 4'b1111;
                 alu_srca_sel = 2'b01;
             end
+            //非典型R型指令（sll，srl）使用节拍：XXEX + RTYPEWR
+
+            //R型指令状态写回状态
             RTYPEWR: begin
                 reg_write_addr_sel = 2'b01;
                 reg_write = 1;
@@ -401,11 +434,6 @@ module controller(
                 alu_op = 3'b011;
                 pc_write_cond = 1;
                 pc_src_sel = 2'b01;
-            end
-            ORIEX: begin
-                alu_op = 3'b110;
-                alu_srca_sel = 2'b01;
-                alu_srcb_sel = 3'b100;
             end
             JEX: begin
                 pc_write = 1;

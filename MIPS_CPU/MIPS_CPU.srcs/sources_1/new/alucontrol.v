@@ -28,14 +28,15 @@ module alucontrol(
 
     always @(*)
         case(alu_op)
-            3'b0000: alu_cont = 4'b0000;  //add for lw/sw/addi/addiu/lui/jal
-            3'b0001: alu_cont = 4'b0001;  //sub for beq
-            3'b0010: alu_cont = 4'b0010;  //and for andi
-            3'b0011: alu_cont = 4'b0011;  //or for ori
-            3'b0100: alu_cont = 4'b0100;  //xor for xori
-            3'b0101: alu_cont = 4'b0101;  //(a==b)?1:0 for bne
-            3'b0110: alu_cont = 4'b1000;  //(a>b)?1:0 for bgtz
-            3'b0111: alu_cont = 4'b0111;  //(a<b)?1:0 for bltz
+            4'b0000: alu_cont = 4'b0000;  //add for lw/sw/addi/addiu/lui/jal
+            4'b0001: alu_cont = 4'b0001;  //sub for beq
+            4'b0010: alu_cont = 4'b0010;  //and for andi
+            4'b0011: alu_cont = 4'b0011;  //or for ori
+            4'b0100: alu_cont = 4'b0100;  //xor for xori
+            4'b0101: alu_cont = 4'b0101;  //(a==b)?1:0 for bne
+            4'b0110: alu_cont = 4'b1000;  //(a>b)?1:0 for bgtz
+            4'b0111: alu_cont = 4'b0110;  //(a<b)?1:0 for slti,bltz
+            4'b1000: alu_cont = 4'b0111;  //(a<b)?1:0 (u) for sltiu
             default:
                 case(funct)
                     6'b100000: alu_cont = 4'b0000;  //add for add
