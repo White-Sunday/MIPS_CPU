@@ -53,13 +53,14 @@ module alu#(parameter WIDTH=32)(
             4'b0010: result = and_res;                  //and
             4'b0011: result = or_res;                   //or
             4'b0100: result = xor_res;                  //xor
-            4'b0101: result = (a==b);                   //(a==b)?1:0
-            4'b0110: result = (a!=b);                   //(a!=b)?1:0
-            4'b0111: result = slt;                      //(a<b)?1:0
-            4'b1000: result = sltu;                     //(a<b)?1:0 (u)
-            4'b1001: result = sgt;                      //(a>b)?1:0
-            4'b1010: result = (b<<a);                   //sll
-            4'b1011: result = (b>>a);                   //srl
+            4'b0101: result = ~or_res;                  //nor
+            4'b0110: result = (a==b);                   //(a==b)?1:0
+            4'b0111: result = (a!=b);                   //(a!=b)?1:0
+            4'b1000: result = slt;                      //(a<b)?1:0
+            4'b1001: result = sltu;                     //(a<b)?1:0 (u)
+            4'b1010: result = sgt;                      //(a>b)?1:0
+            4'b1011: result = (b<<a);                   //sll
+            4'b1100: result = (b>>a);                   //srl
         endcase
     end
 endmodule

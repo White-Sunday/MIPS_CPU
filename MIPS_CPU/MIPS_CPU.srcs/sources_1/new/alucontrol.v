@@ -33,20 +33,24 @@ module alucontrol(
             4'b0010: alu_cont = 4'b0010;  //and for andi
             4'b0011: alu_cont = 4'b0011;  //or for ori
             4'b0100: alu_cont = 4'b0100;  //xor for xori
-            4'b0101: alu_cont = 4'b0101;  //(a==b)?1:0 for beq
-            4'b0110: alu_cont = 4'b0110;  //(a!=b)?1:0 for bne
-            4'b0111: alu_cont = 4'b1001;  //(a>b)?1:0 for bgtz
-            4'b1000: alu_cont = 4'b0111;  //(a<b)?1:0 for slti,bltz
-            4'b1001: alu_cont = 4'b1000;  //(a<b)?1:0 (u) for sltiu
+            4'b0101: alu_cont = 4'b0110;  //(a==b)?1:0 for beq
+            4'b0110: alu_cont = 4'b0111;  //(a!=b)?1:0 for bne
+            4'b0111: alu_cont = 4'b1010;  //(a>b)?1:0 for bgtz
+            4'b1000: alu_cont = 4'b1000;  //(a<b)?1:0 for slti,bltz
+            4'b1001: alu_cont = 4'b1001;  //(a<b)?1:0 (u) for sltiu
             default:
                 case(funct)
                     6'b100000: alu_cont = 4'b0000;  //add for add
-                    6'b100010: alu_cont = 4'b0001;  //sub for sub
-                    6'b000000: alu_cont = 4'b1010;  //sll for sll
-                    6'b000010: alu_cont = 4'b1011;  //srl for srl
-                    6'b101010: alu_cont = 4'b0111;  //(a<b)?1:0 for slt
                     6'b100001: alu_cont = 4'b0000;  //add for addu
+                    6'b100010: alu_cont = 4'b0001;  //sub for sub
+                    6'b100011: alu_cont = 4'b0001;  //sub for subu
+                    6'b000000: alu_cont = 4'b1011;  //sll for sll
+                    6'b000010: alu_cont = 4'b1100;  //srl for srl
+                    6'b101010: alu_cont = 4'b1000;  //(a<b)?1:0 for slt
                     6'b100100: alu_cont = 4'b0010;  //and for and
+                    6'b100101: alu_cont = 4'b0011;  //or for or
+                    6'b100110: alu_cont = 4'b0100;  //xor for xor
+                    6'b100111: alu_cont = 4'b0101;  //nor for nor
                     6'b001000: alu_cont = 4'b0000;  //add for jr
                 default:
                     alu_cont = 4'b1111;

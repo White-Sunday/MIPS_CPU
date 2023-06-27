@@ -32,9 +32,12 @@
 // bltz
 // add
 // addu
+// sub
+// subu
 // and
 // or
 // nor
+// xor
 // 
 // j
 // jal

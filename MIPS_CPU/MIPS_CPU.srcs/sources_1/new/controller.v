@@ -233,6 +233,7 @@ module controller(
             //典型R型指令（add，addu，and，sub）使用节拍：RTYPEEX + RTYPEWR
             RTYPEEX: next_state = RTYPEWR;
             //非典型R型指令（sll，srl）使用节拍：XXEX + RTYPEWR
+            //R型指令写回状态
             RTYPEWR: next_state = FETCH;
             //srl
             SRLEX:  next_state = RTYPEWR;
@@ -433,7 +434,7 @@ module controller(
             end
             //非典型R型指令（sll，srl）使用节拍：XXEX + RTYPEWR
 
-            //R型指令状态写回状态
+            //R型指令写回状态
             RTYPEWR: begin
                 reg_write_addr_sel = 2'b01;
                 reg_write = 1;
