@@ -91,14 +91,12 @@ module controller(
     parameter RTYPEEX = 8'b100_00000;
     //非典型R型指令（sll，srl）使用节拍：XXEX + RTYPEWR
     //（高位100_1）
-    parameter SLLVEX = 8'b100_0_0100;
-    parameter SLTEX = 8'b100_0_0101;
-    parameter SLTUEX = 8'b100_0_0110;
-    parameter SRAVEX = 8'b100_0_0111;
-    parameter SLLEX = 8'b100_1_0010;
-    parameter SRLEX = 8'b100_1_0011;
-    parameter JREX = 8'b100_1_0100;
-    parameter SRAEX = 8'b100_1_0101;
+    parameter SLLEX = 8'b100_00000;
+    parameter SLLVEX = 8'b100_00001;
+    parameter SRLEX = 8'b100_00010;
+    parameter SRAEX = 8'b100_00011;
+    parameter SRAVEX = 8'b100_00100;
+    parameter JREX = 8'b100_00101;
     parameter RTYPEWR = 8'b100_11111;  //结果写入寄存器，寄存器地址经由reg_write_addr_sel <= 2'b01指向rd提供地址，下一个clk上升沿到来成功写入
     //J型指令状态（高位101）
     parameter JEX = 8'b101_00000;
@@ -129,9 +127,13 @@ module controller(
 
     parameter J = 6'b000010;
     parameter JAL = 6'b000011;
+    
+    //func
     parameter SLL = 6'b000000;
+    parameter SLLV = 6'b000100;
     parameter SRL = 6'b000010;
-    parameter SLT = 6'b101010;
+    parameter SRA = 6'b000011;
+    parameter SRAV = 6'b000111;
     parameter JR = 6'b001000;
 
     //节拍状态初始化与状态转变
@@ -167,7 +169,10 @@ module controller(
                         RTYPE: 
                             case(func)
                                 SLL: next_state = SLLEX;
+                                SLLV: next_state = SLLVEX;
                                 SRL: next_state = SRLEX;
+                                SRA: next_state = SRAEX;
+                                SRAV: next_state = SRAVEX;
                                 JR:  next_state = JREX;
                                 default: next_state = RTYPEEX;  //这里的default是指add等典型的R型指令
                             endcase
@@ -233,14 +238,20 @@ module controller(
             //典型R型指令（add，addu，and，sub）使用节拍：RTYPEEX + RTYPEWR
             RTYPEEX: next_state = RTYPEWR;
             //非典型R型指令（sll，srl）使用节拍：XXEX + RTYPEWR
-            //R型指令写回状态
-            RTYPEWR: next_state = FETCH;
-            //srl
-            SRLEX:  next_state = RTYPEWR;
             //sll
             SLLEX:  next_state = RTYPEWR;
+            //sllv
+            SLLVEX:  next_state = RTYPEWR;
+            //srl
+            SRLEX:  next_state = RTYPEWR;
+            //sra
+            SRAEX:  next_state = RTYPEWR;
+            //srav
+            SRAVEX:  next_state = RTYPEWR;
             //jr
             JREX:   next_state = RTYPEWR;
+            //R型指令写回状态
+            RTYPEWR: next_state = FETCH;
             //j
             JEX:    next_state = PCWAIT;
             //jal
