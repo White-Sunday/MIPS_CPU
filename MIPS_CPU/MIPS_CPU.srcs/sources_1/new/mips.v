@@ -45,10 +45,9 @@
 // srl
 // sra
 // srav
-// 
+// jr
 // j
 // jal
-// jr
 // Dependencies: 
 // 
 // Revision:

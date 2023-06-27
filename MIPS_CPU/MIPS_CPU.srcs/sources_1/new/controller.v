@@ -124,7 +124,6 @@ module controller(
     parameter BGTZ = 6'b000111;
     parameter BLTZ = 6'b000001;
     parameter RTYPE = 6'b000000;
-
     parameter J = 6'b000010;
     parameter JAL = 6'b000011;
     
@@ -249,9 +248,10 @@ module controller(
             //srav
             SRAVEX:  next_state = RTYPEWR;
             //jr
-            JREX:   next_state = RTYPEWR;
+            JREX:   next_state = PCWAIT;
             //R型指令写回状态
             RTYPEWR: next_state = FETCH;
+            //J型指令状态
             //j
             JEX:    next_state = PCWAIT;
             //jal
@@ -481,24 +481,25 @@ module controller(
                 reg_write_addr_sel = 2'b01;
                 reg_write = 1;
             end
+            //J型指令状态
+            //j
             JEX: begin
                 pc_write = 1;
                 pc_src_sel = 2'b10;
             end
+            //jal
             JALEX: begin
+                alu_op = 4'b0000;
                 alu_srcb_sel = 3'b001;
-                alu_op = 3'b000;
             end
             JALWR: begin
                 reg_write_addr_sel = 2'b10;
                 reg_write = 1;
-                // alu_op <= 3'b000;
-                // alu_srcb_sel <= 3'b011;
-                pc_write = 1;
                 pc_src_sel = 2'b10;
+                pc_write = 1;
             end
+            //pcwait
             PCWAIT: begin
-
             end
         endcase
     end
