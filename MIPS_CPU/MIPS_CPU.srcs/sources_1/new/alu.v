@@ -35,6 +35,7 @@ module alu#(parameter WIDTH=32)(
     wire [WIDTH-1:0] slt;
     wire [WIDTH-1:0] sltu;
     wire [WIDTH-1:0] sgt;
+    wire [WIDTH-1:0] sra;
 
     assign b2 = ~b+1;
     assign add_res = a+b;
@@ -45,6 +46,7 @@ module alu#(parameter WIDTH=32)(
     assign slt = sub_res[WIDTH-1]?32'h1:32'h0;  //有符号比较 set less than
     assign sltu = (a<b)?32'h1:32'h0;        //无符号比较
     assign sgt = (sub_res[WIDTH-1]|(sub_res==0))?32'h0:32'h1;  //有符号比较 set greater than
+    assign sra = b[WIDTH-1:0]?(b>>a)|(32'hffffffff<<(32-a)):(b>>a); //>>>没有用，，，
 
     always @(*)begin
         case (alu_cont[3:0])
@@ -59,8 +61,9 @@ module alu#(parameter WIDTH=32)(
             4'b1000: result = slt;                      //(a<b)?1:0
             4'b1001: result = sltu;                     //(a<b)?1:0 (u)
             4'b1010: result = sgt;                      //(a>b)?1:0
-            4'b1011: result = (b<<a);                   //sll
+            4'b1011: result = (b<<a);                   //sll 
             4'b1100: result = (b>>a);                   //srl
+            4'b1101: result = sra;                      //sra >>>没有用，，，
         endcase
     end
 endmodule

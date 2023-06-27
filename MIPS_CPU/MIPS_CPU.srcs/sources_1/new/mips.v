@@ -38,13 +38,17 @@
 // or
 // nor
 // xor
+// slt
+// sltu
+// sll
+// sllv
+// srl
+// sra
+// srav
 // 
 // j
 // jal
 // jr
-// sll
-// slt
-// sub
 // Dependencies: 
 // 
 // Revision:

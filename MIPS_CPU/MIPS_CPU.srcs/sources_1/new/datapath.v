@@ -101,7 +101,7 @@ module datapath #(parameter WIDTH=32, ADDR=16, REGBITS=5, CONST_ZERO = 32'b0, CO
     //指令里的数值类型字段处理
     assign constx4 = {pc[31:28],instr[25:0],2'b00};  //j、jal target
     assign offsetx4 = instr[ADDR-1]?{14'b11111111111111,instr[ADDR-1:0],2'b00}:{14'b0,instr[ADDR-1:0],2'b00};  //beq、bne、bgtz offset
-    assign shamt = {27'b0,instr[10:6]};  //srl、sll shamt
+    assign shamt = {27'b0,instr[10:6]};  //sll、srl、sra shamt
     assign offset_s = instr[ADDR-1]?{16'b1111111111111111,instr[ADDR-1:0]}:{16'b0,instr[ADDR-1:0]};  //lw、sw offset、i型指令imme（符号拓展）
     assign offset_u = {16'b0,instr[ADDR-1:0]};  //i型指令imme（无符号拓展）
     assign offset_h = {instr[ADDR-1:0],16'b0};  //i型指令imme（左移16位，低位补0）

@@ -91,12 +91,12 @@ module controller(
     parameter RTYPEEX = 8'b100_00000;
     //非典型R型指令（sll，srl）使用节拍：XXEX + RTYPEWR
     //（高位100_1）
-    parameter SLLEX = 8'b100_00000;
-    parameter SLLVEX = 8'b100_00001;
-    parameter SRLEX = 8'b100_00010;
-    parameter SRAEX = 8'b100_00011;
-    parameter SRAVEX = 8'b100_00100;
-    parameter JREX = 8'b100_00101;
+    parameter SLLEX = 8'b100_00001;
+    parameter SLLVEX = 8'b100_00010;
+    parameter SRLEX = 8'b100_00011;
+    parameter SRAEX = 8'b100_00100;
+    parameter SRAVEX = 8'b100_00101;
+    parameter JREX = 8'b100_00110;
     parameter RTYPEWR = 8'b100_11111;  //结果写入寄存器，寄存器地址经由reg_write_addr_sel <= 2'b01指向rd提供地址，下一个clk上升沿到来成功写入
     //J型指令状态（高位101）
     parameter JEX = 8'b101_00000;
@@ -444,25 +444,42 @@ module controller(
                 alu_srca_sel = 2'b01;
             end
             //非典型R型指令（sll，srl）使用节拍：XXEX + RTYPEWR
-
-            //R型指令写回状态
-            RTYPEWR: begin
-                reg_write_addr_sel = 2'b01;
-                reg_write = 1;
-            end
-            SRLEX: begin
-                alu_op = 4'b1111;
-                alu_srca_sel = 2'b10;
-            end
+            //sll
             SLLEX: begin
                 alu_op = 4'b1111;
                 alu_srca_sel = 2'b10;
             end
+            //sllv
+            SLLVEX: begin
+                alu_op = 4'b1111;
+                alu_srca_sel = 2'b01;
+            end
+            //srl
+            SRLEX: begin
+                alu_op = 4'b1111;
+                alu_srca_sel = 2'b10;
+            end
+            //sra
+            SRAEX: begin
+                alu_op = 4'b1111;
+                alu_srca_sel = 2'b10;
+            end
+            //srav
+            SRAVEX: begin
+                alu_op = 4'b1111;
+                alu_srca_sel = 2'b01;
+            end
+            //jr
             JREX: begin
                 pc_write = 1;
                 alu_op = 4'b1111;
                 alu_srca_sel = 2'b01;
                 alu_srcb_sel = 3'b110;
+            end
+            //R型指令写回状态
+            RTYPEWR: begin
+                reg_write_addr_sel = 2'b01;
+                reg_write = 1;
             end
             JEX: begin
                 pc_write = 1;
