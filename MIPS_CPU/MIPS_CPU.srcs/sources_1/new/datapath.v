@@ -35,7 +35,7 @@ module datapath #(parameter WIDTH=32, ADDR=16, REGBITS=5, CONST_ZERO = 32'b0, CO
     input [1:0] reg_write_data_sel,
     input [1:0] reg_write_addr_sel,
     input reg_write,
-    output zero,        //alu运算结果是否为0
+    output branch_en,        //pc是否分支跳转
     output [31:0] instr,
     output [ADDR-1:0] addr,
     output [WIDTH-1:0] mem_write_data);
@@ -120,7 +120,7 @@ module datapath #(parameter WIDTH=32, ADDR=16, REGBITS=5, CONST_ZERO = 32'b0, CO
     //alu输出结果D触发器，clk上升沿值改变
     flop #(WIDTH) alu_res_reg(clk,alu_result,alu_out);
     //alu计算结果是否为0
-    assign zero = (alu_result==0);
+    assign branch_en = (alu_result==1);
 
     //输出pc下一个值的四路选择器
     mux4 #(WIDTH) pc_mux(alu_result,alu_out,constx4,CONST_ZERO,pc_src_sel,next_pc);

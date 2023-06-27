@@ -44,7 +44,7 @@ module alu#(parameter WIDTH=32)(
     assign xor_res = a^b;
     assign slt = sub_res[WIDTH-1]?32'h1:32'h0;  //有符号比较 set less than
     assign sltu = (a<b)?32'h1:32'h0;        //无符号比较
-    assign sgt = sub_res[WIDTH-1]?32'h0:32'h1;  //有符号比较 set greater than
+    assign sgt = (sub_res[WIDTH-1]|(sub_res==0))?32'h0:32'h1;  //有符号比较 set greater than
 
     always @(*)begin
         case (alu_cont[3:0])
@@ -54,11 +54,12 @@ module alu#(parameter WIDTH=32)(
             4'b0011: result = or_res;                   //or
             4'b0100: result = xor_res;                  //xor
             4'b0101: result = (a==b);                   //(a==b)?1:0
-            4'b0110: result = slt;                      //(a<b)?1:0
-            4'b0111: result = sltu;                     //(a<b)?1:0 (u)
-            4'b1000: result = sgt;                      //(a>b)?1:0
-            4'b1001: result = (b<<a);                   //sll
-            4'b1010: result = (b>>a);                   //srl
+            4'b0110: result = (a!=b);                   //(a!=b)?1:0
+            4'b0111: result = slt;                      //(a<b)?1:0
+            4'b1000: result = sltu;                     //(a<b)?1:0 (u)
+            4'b1001: result = sgt;                      //(a>b)?1:0
+            4'b1010: result = (b<<a);                   //sll
+            4'b1011: result = (b>>a);                   //srl
         endcase
     end
 endmodule

@@ -26,16 +26,19 @@
 // lui
 // slti
 // sltiu
-// add
-// 
 // beq
-// bgtz
 // bne
+// bgtz
+// bltz
+// add
+// addu
+// and
+// or
+// nor
+// 
 // j
 // jal
 // jr
-// lui
-// ori
 // sll
 // slt
 // sub
@@ -60,7 +63,7 @@ module mips #(parameter WIDTH=32, ADDR=16, REGBITS=5)(
     wire [31:0] instr;      //指令
 
     //CU控制信号
-    wire zero;              //alu计算结果是否为0
+    wire branch_en;         //pc是否分支跳转
     wire addr_sel;          //存储器地址addr二路选择信号
     wire pc_en;             //pc触发器使能信号，next_pc->pc
     wire ir_write;          //ir写信号
@@ -80,7 +83,7 @@ module mips #(parameter WIDTH=32, ADDR=16, REGBITS=5)(
         .reset(reset),
         .op(instr[31:26]),
         .func(instr[5:0]),
-        .zero(zero),
+        .branch_en(branch_en),
         .ir_write(ir_write),
         .pc_src_sel(pc_src_sel),
         .pc_en(pc_en),
@@ -113,7 +116,7 @@ module mips #(parameter WIDTH=32, ADDR=16, REGBITS=5)(
         .reg_write_data_sel(reg_write_data_sel),
         .reg_write_addr_sel(reg_write_addr_sel),
         .reg_write(reg_write),
-        .zero(zero),
+        .branch_en(branch_en),
         .instr(instr),
         .addr(addr),
         .mem_write_data(mem_write_data));

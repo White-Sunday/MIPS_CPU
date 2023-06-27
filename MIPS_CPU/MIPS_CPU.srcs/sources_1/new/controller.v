@@ -34,7 +34,7 @@ module controller(
     input reset,
     input [5:0] op,         //操作码
     input [5:0] func,       //函数码
-    input zero,             //alu计算结果是否为0信号
+    input branch_en,        //pc是否分支跳转
     output reg ir_write,
     output reg [1:0] pc_src_sel,
     output pc_en,
@@ -82,9 +82,9 @@ module controller(
     parameter ITYPEWR = 8'b010_11111;  //结果写入寄存器，寄存器地址默认reg_write_addr_sel <= 2'b00指向rt提供地址，下一个clk上升沿到来成功写入
     //条件分支型I型指令指令状态（高位011）
     parameter BEQEX = 8'b011_00000;
-    parameter BGTZEX = 8'b011_00001;
-    parameter BLTZEX = 8'b011_00010;
-    parameter BNEEX = 8'b011_00011;
+    parameter BNEEX = 8'b011_00001;
+    parameter BGTZEX = 8'b011_00010;
+    parameter BLTZEX = 8'b011_00011;
     //R型指令状态（高位100）
     //典型R型指令（add，addu 等“rd = rs op rt”的）使用节拍：RTYPEEX + RTYPEWR
     //（高位100_0）
@@ -121,11 +121,12 @@ module controller(
     parameter LUI = 6'b001111;
     parameter SLTI = 6'b001010;
     parameter SLTIU = 6'b001011;
+    parameter BEQ = 6'b000100;
+    parameter BNE = 6'b000101;
+    parameter BGTZ = 6'b000111;
+    parameter BLTZ = 6'b000001;
     parameter RTYPE = 6'b000000;
 
-    parameter BEQ = 6'b000100;
-    parameter BGTZ = 6'b000111;
-    parameter BNE = 6'b000101;
     parameter J = 6'b000010;
     parameter JAL = 6'b000011;
     parameter SLL = 6'b000000;
@@ -159,6 +160,10 @@ module controller(
                         LUI: next_state = LUIEX;
                         SLTI: next_state = SLTIEX;
                         SLTIU: next_state = SLTIUEX;
+                        BEQ:  next_state = BEQEX;
+                        BNE:  next_state = BNEEX;
+                        BGTZ: next_state = BGTZEX;
+                        BLTZ: next_state = BLTZEX;
                         RTYPE: 
                             case(func)
                                 SLL: next_state = SLLEX;
@@ -166,9 +171,6 @@ module controller(
                                 JR:  next_state = JREX;
                                 default: next_state = RTYPEEX;  //这里的default是指add等典型的R型指令
                             endcase
-                        BEQ:  next_state = BEQEX;
-                        BGTZ: next_state = BGTZEX;
-                        BNE:  next_state = BNEEX;
                         J:    next_state = JEX;
                         JAL:  next_state = JALEX;
                         default: next_state = FETCH;
@@ -216,8 +218,17 @@ module controller(
             SLTIEX: next_state = ITYPEWR;
             //sltiu
             SLTIUEX: next_state = ITYPEWR;
-            //i wr
+            //运算型I型指令状态写回状态
             ITYPEWR: next_state = FETCH;
+            //条件分支型I型指令指令状态
+            //beq
+            BEQEX:  next_state = PCWAIT;    //还需要一拍来改变PC
+            //bne
+            BNEEX:  next_state = PCWAIT;    //还需要一拍来改变PC
+            //bgtz
+            BGTZEX: next_state = PCWAIT;    //还需要一拍来改变PC
+            //bltz
+            BLTZEX: next_state = PCWAIT;    //还需要一拍来改变PC
             //R型指令状态
             //典型R型指令（add，addu，and，sub）使用节拍：RTYPEEX + RTYPEWR
             RTYPEEX: next_state = RTYPEWR;
@@ -229,13 +240,6 @@ module controller(
             SLLEX:  next_state = RTYPEWR;
             //jr
             JREX:   next_state = RTYPEWR;
-            //beq
-            BEQEX:  next_state = PCWAIT;    //还需要一拍来改变PC
-            //bgtz
-            BGTZEX: next_state = PCWAIT;    //还需要一拍来改变PC
-            //bne
-            BNEEX:  next_state = PCWAIT;    //还需要一拍来改变PC
-            //i型
             //j
             JEX:    next_state = PCWAIT;
             //jal
@@ -376,19 +380,50 @@ module controller(
             end
             //slti
             SLTIEX: begin
-                alu_op = 4'b0111;
+                alu_op = 4'b1000;
                 alu_srca_sel = 2'b01;
                 alu_srcb_sel = 3'b010;
             end
             //sltiu
             SLTIUEX: begin
-                alu_op = 4'b1000;
+                alu_op = 4'b1001;
                 alu_srca_sel = 2'b01;
                 alu_srcb_sel = 3'b010;
             end
             //运算型I型指令写回状态
             ITYPEWR: begin
                 reg_write = 1;
+            end
+            //条件分支型I型指令指令状态
+            //beq
+            BEQEX: begin
+                alu_srca_sel = 2'b01;
+                alu_op = 4'b0101;
+                pc_write_cond = 1;
+                pc_src_sel = 2'b01;
+            end
+            //bne
+            BNEEX: begin
+                alu_srca_sel = 2'b01;
+                alu_op = 4'b0110;
+                pc_write_cond = 1;
+                pc_src_sel = 2'b01;
+            end
+            //bgtz
+            BGTZEX: begin
+                alu_srca_sel = 2'b01;
+                alu_srcb_sel = 3'b110;
+                alu_op = 4'b0111;
+                pc_write_cond = 1;
+                pc_src_sel = 2'b01;
+            end
+            //bltz
+            BLTZEX: begin
+                alu_srca_sel = 2'b01;
+                alu_srcb_sel = 3'b110;
+                alu_op = 4'b1000;
+                pc_write_cond = 1;
+                pc_src_sel = 2'b01;
             end
             //R型指令状态
             //典型R型指令（add，addu，and，sub）使用节拍：RTYPEEX + RTYPEWR
@@ -417,24 +452,6 @@ module controller(
                 alu_srca_sel = 2'b01;
                 alu_srcb_sel = 3'b110;
             end
-            BEQEX: begin
-                alu_srca_sel = 2'b01;
-                alu_op = 3'b010;
-                pc_write_cond = 1;
-                pc_src_sel = 2'b01;
-            end
-            BGTZEX: begin
-                alu_srca_sel = 2'b01;
-                alu_op = 3'b100;
-                pc_write_cond = 1;
-                pc_src_sel = 2'b01;
-            end
-            BNEEX: begin
-                alu_srca_sel = 2'b01;
-                alu_op = 3'b011;
-                pc_write_cond = 1;
-                pc_src_sel = 2'b01;
-            end
             JEX: begin
                 pc_write = 1;
                 pc_src_sel = 2'b10;
@@ -456,5 +473,5 @@ module controller(
             end
         endcase
     end
-    assign pc_en = pc_write | (pc_write_cond&zero);            
+    assign pc_en = pc_write | (pc_write_cond&branch_en);            
 endmodule
