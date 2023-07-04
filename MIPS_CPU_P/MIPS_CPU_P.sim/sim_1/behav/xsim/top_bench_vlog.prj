@@ -1,22 +1,15 @@
 # compile verilog/system verilog design source files
 verilog xil_defaultlib  \
-"../../../../MIPS_CPU.srcs/sources_1/new/alu.v" \
-"../../../../MIPS_CPU.srcs/sources_1/new/alucontrol.v" \
-"../../../../MIPS_CPU.srcs/sources_1/new/controller.v" \
-"../../../../MIPS_CPU.srcs/sources_1/new/datapath.v" \
-"../../../../MIPS_CPU.srcs/sources_1/new/flop.v" \
-"../../../../MIPS_CPU.srcs/sources_1/new/flopen.v" \
-"../../../../MIPS_CPU.srcs/sources_1/new/flopenr.v" \
-"../../../../MIPS_CPU.srcs/sources_1/new/memory.v" \
-"../../../../MIPS_CPU.srcs/sources_1/new/mips.v" \
-"../../../../MIPS_CPU.srcs/sources_1/new/mux2.v" \
-"../../../../MIPS_CPU.srcs/sources_1/new/mux4.v" \
-"../../../../MIPS_CPU.srcs/sources_1/new/mux8.v" \
-"../../../../MIPS_CPU.srcs/sources_1/new/ram.v" \
-"../../../../MIPS_CPU.srcs/sources_1/new/regfile.v" \
-"../../../../MIPS_CPU.srcs/sources_1/new/rom.v" \
-"../../../../MIPS_CPU.srcs/sources_1/new/top.v" \
-"../../../../MIPS_CPU.srcs/sim_1/new/top_bench.v" \
+"../../../../MIPS_CPU_P.srcs/sources_1/new/Arithmetic/CLA/add.v" \
+"../../../../MIPS_CPU_P.srcs/sources_1/new/Arithmetic/CLA/cla32.v" \
+"../../../../MIPS_CPU_P.srcs/sources_1/new/Arithmetic/CLA/cla_16.v" \
+"../../../../MIPS_CPU_P.srcs/sources_1/new/Arithmetic/CLA/cla_2.v" \
+"../../../../MIPS_CPU_P.srcs/sources_1/new/Arithmetic/CLA/cla_32.v" \
+"../../../../MIPS_CPU_P.srcs/sources_1/new/Arithmetic/CLA/cla_4.v" \
+"../../../../MIPS_CPU_P.srcs/sources_1/new/Arithmetic/CLA/cla_8.v" \
+"../../../../MIPS_CPU_P.srcs/sources_1/new/Arithmetic/CLA/gp.v" \
+"../../../../MIPS_CPU_P.srcs/sources_1/new/test.v" \
+"../../../../MIPS_CPU_P.srcs/sim_1/new/top_bench.v" \
 
 # compile glbl module
 verilog xil_defaultlib "glbl.v"

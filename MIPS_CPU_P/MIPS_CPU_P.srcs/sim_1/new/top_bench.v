@@ -24,16 +24,28 @@ module top_bench();
     reg clk;
     reg reset;
 
-    top soc(
-    .clk(clk),
-    .reset(reset));
+    reg [31:0] a;
+    reg [31:0] b;
+    reg ci;
+    wire [31:0] s;
+
+    test test_soc(a,b,ci,s);
     
+    // initial 
+    // begin
+    //     clk<=0;
+    //     reset <=1;
+    //     #22;
+    //     reset <=0;
+    // end
+
     initial 
     begin
         clk<=0;
         reset <=1;
-        #22;
-        reset <=0;
+        a <= -1;
+        b <= 1;
+        ci <= 1;
     end
 
     always #5 clk=~clk;

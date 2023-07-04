@@ -1,0 +1,15 @@
+0.7
+2020.2
+May  7 2023
+15:24:31
+D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.sim/sim_1/behav/xsim/glbl.v,1649976174,verilog,,,,glbl,,,,,,,,
+D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sim_1/new/top_bench.v,1688440674,verilog,,,,top_bench,,,,,,,,
+D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Arithmetic/CLA/add.v,1688440014,verilog,,D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Arithmetic/CLA/cla32.v,,add,,,,,,,,
+D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Arithmetic/CLA/cla32.v,1688440038,verilog,,D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Arithmetic/CLA/cla_16.v,,cla32,,,,,,,,
+D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Arithmetic/CLA/cla_16.v,1688439934,verilog,,D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Arithmetic/CLA/cla_2.v,,cla_16,,,,,,,,
+D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Arithmetic/CLA/cla_2.v,1688438920,verilog,,D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Arithmetic/CLA/cla_32.v,,cla_2,,,,,,,,
+D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Arithmetic/CLA/cla_32.v,1688438891,verilog,,D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Arithmetic/CLA/cla_4.v,,cla_32,,,,,,,,
+D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Arithmetic/CLA/cla_4.v,1688438943,verilog,,D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Arithmetic/CLA/cla_8.v,,cla_4,,,,,,,,
+D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Arithmetic/CLA/cla_8.v,1688439890,verilog,,D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Arithmetic/CLA/gp.v,,cla_8,,,,,,,,
+D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Arithmetic/CLA/gp.v,1688439909,verilog,,D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/test.v,,gp,,,,,,,,
+D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/test.v,1688440292,verilog,,D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sim_1/new/top_bench.v,,test,,,,,,,,
