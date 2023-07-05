@@ -43,7 +43,7 @@ module top_bench();
     begin
         clk<=0;
         reset <=1;
-        a <= -1;
+        a <= -4;
         b <= 1;
         ci <= 1;
     end

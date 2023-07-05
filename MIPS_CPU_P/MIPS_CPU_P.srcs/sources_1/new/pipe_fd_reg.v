@@ -20,7 +20,15 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module pipe_fd_reg(
+module pipe_fd_reg #(parameter WIDTH=32)(
+    input clk,
+    input clrn,
+    input ir_wen,
+    input [WIDTH-1:0] pc4,
+    input [WIDTH-1:0] instr,
+    output [WIDTH-1:0] id_pc4,
+    output [WIDTH-1:0] id_instr);
 
-    );
+    dffe32 fd_pc4(pc4,clk,clrn,ir_wen,id_pc4);
+    dffe32 fd_instr(instr,clk,clrn,ir_wen,id_instr);
 endmodule

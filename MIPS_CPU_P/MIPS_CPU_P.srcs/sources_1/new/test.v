@@ -26,6 +26,7 @@ module test(
     input ci,
     output [31:0] s);
 
-    cla32 test_adder(a,b,ci,s);
+    // cla32 test_adder(a,b,ci,s);
+    shift test_shifter(a,b[4:0],1'b1,1'b1,s);
     
 endmodule

@@ -1,19 +1,5 @@
-INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Arithmetic/CLA/add.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module add
-INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Arithmetic/CLA/cla32.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module cla32
-INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Arithmetic/CLA/cla_16.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module cla_16
-INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Arithmetic/CLA/cla_2.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module cla_2
-INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Arithmetic/CLA/cla_32.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module cla_32
-INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Arithmetic/CLA/cla_4.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module cla_4
-INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Arithmetic/CLA/cla_8.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module cla_8
-INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Arithmetic/CLA/gp.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module gp
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Module/shift.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module shift
 INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/test.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module test
 INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sim_1/new/top_bench.v" into library xil_defaultlib
