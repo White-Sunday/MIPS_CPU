@@ -24,29 +24,38 @@ module top_bench();
     reg clk;
     reg reset;
 
-    reg [31:0] a;
-    reg [31:0] b;
-    reg ci;
-    wire [31:0] s;
+    wire [31:0] pc;
+    wire [31:0] id_instr;        // ID段的指令
+    wire [31:0] exe_alu;         // EXE段得到的alu计算结果
+    wire [31:0] mem_alu;         // MEM段的alu计算结果
+    wire [31:0] wb_rwd;
 
-    test test_soc(a,b,ci,s);
+    mips_cpu cpu(clk,reset,pc,id_instr,exe_alu,mem_alu,wb_rwd);
+
+    // reg [31:0] a;
+    // reg [31:0] b;
+    // reg ci;
+    // wire [31:0] s;
+
+    // test test_soc(a,b,ci,s);
+
     
+    initial 
+    begin
+        clk<=0;
+        reset <=0;
+        #22;
+        reset <=1;
+    end
+
     // initial 
     // begin
     //     clk<=0;
     //     reset <=1;
-    //     #22;
-    //     reset <=0;
+    //     a <= -4;
+    //     b <= 1;
+    //     ci <= 1;
     // end
-
-    initial 
-    begin
-        clk<=0;
-        reset <=1;
-        a <= -4;
-        b <= 1;
-        ci <= 1;
-    end
 
     always #5 clk=~clk;
 endmodule

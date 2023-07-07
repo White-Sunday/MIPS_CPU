@@ -23,7 +23,7 @@
 module regfile #(parameter WIDTH=32, REGBITS=5)(
     input clk,
     input clrn,
-    input d,                    // data of write port
+    input [WIDTH-1:0] d,        // data of write port
     input [REGBITS-1:0] ra,     // reg # of read port A
     input [REGBITS-1:0] rb,     // reg # of read port B
     input [REGBITS-1:0] wn,     // reg # of write port
@@ -43,6 +43,7 @@ module regfile #(parameter WIDTH=32, REGBITS=5)(
             register[29] <= 32'h1fe8;    //$sp堆栈指针寄存器赋初值
         end else begin
             if ((wn!=0) && we) begin    // not reg[0] and enabled
+                register[wn] <= d;
             end
         end
     end

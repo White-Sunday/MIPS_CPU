@@ -33,7 +33,7 @@ module control #(parameter WIDTH=32)(
     input mem_m2reg,
     input rs_rt_equ,            // 用于beq和bne的rs_rt比较信号
     output [3:0] id_aluc,       // alu操作控制信号
-    output [3:0] pc_src,        // next pc选择信号
+    output [1:0] pc_src,        // next pc选择信号
     output reg [1:0] fwd_a,     // 前递选择信号
     output reg [1:0] fwd_b,
     output id_wreg,             // 控制信号

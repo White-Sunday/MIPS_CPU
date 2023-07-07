@@ -120,7 +120,7 @@ module mips_cpu #(parameter WIDTH=32, ADDR=32, REGBITS=5)(
     pipe_mem#(WIDTH, ADDR) mem_stage(clk,mem_alu,mem_b,mem_wmem,mem_mrd);
 
     // MEM-WB 流水寄存器
-    pipe_mw_reg#(WIDTH, REGBITS) wm_reg(clk,clrn,mem_mrd,mem_alu,mem_rn,mem_wreg,mem_m2reg,
+    pipe_mw_reg#(WIDTH, REGBITS) mw_reg(clk,clrn,mem_mrd,mem_alu,mem_rn,mem_wreg,mem_m2reg,
         wb_mrd,wb_alu,wb_rn,wb_wreg,wb_m2reg);
     // WB段
     pipe_wb#(WIDTH, REGBITS) wb_stage(wb_mrd,wb_alu,wb_rn,wb_wreg,wb_m2reg,wb_rwd);

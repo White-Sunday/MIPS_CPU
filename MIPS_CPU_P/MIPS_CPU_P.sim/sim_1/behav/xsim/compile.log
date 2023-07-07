@@ -1,6 +1,68 @@
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Arithmetic/CLA/add.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module add
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Module/alu.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module alu
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Arithmetic/CLA/cla32.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module cla32
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Arithmetic/CLA/cla_16.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module cla_16
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Arithmetic/CLA/cla_2.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module cla_2
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Arithmetic/CLA/cla_32.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module cla_32
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Arithmetic/CLA/cla_4.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module cla_4
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Arithmetic/CLA/cla_8.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module cla_8
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Module/control.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module control
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Module/data_mem.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module data_mem
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/DigitalLogic/dffe32.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module dffe32
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Arithmetic/CLA/gp.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module gp
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Module/inst_mem.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module inst_mem
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/mips_cpu.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mips_cpu
+WARNING: [VRFC 10-9336] redeclaration of ANSI port 'id_instr' is not allowed [D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/mips_cpu.v:40]
+WARNING: [VRFC 10-9336] redeclaration of ANSI port 'exe_alu' is not allowed [D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/mips_cpu.v:63]
+WARNING: [VRFC 10-9336] redeclaration of ANSI port 'mem_alu' is not allowed [D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/mips_cpu.v:76]
+WARNING: [VRFC 10-9336] redeclaration of ANSI port 'wb_rwd' is not allowed [D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/mips_cpu.v:87]
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/DigitalLogic/mux2x32.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mux2x32
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/DigitalLogic/mux2x5.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mux2x5
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/DigitalLogic/mux4x32.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module mux4x32
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/pipe_de_reg.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module pipe_de_reg
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/pipe_em_reg.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module pipe_em_reg
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/pipe_exe.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module pipe_exe
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/pipe_fd_reg.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module pipe_fd_reg
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/pipe_id.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module pipe_id
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/pipe_if.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module pipe_if
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/pipe_mem.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module pipe_mem
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/pipe_mw_reg.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module pipe_mw_reg
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/pipe_pc.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module pipe_pc
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/pipe_wb.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module pipe_wb
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Module/ram.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module ram
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Module/regfile.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module regfile
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Module/rom.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module rom
 INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Module/shift.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module shift
-INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/test.v" into library xil_defaultlib
-INFO: [VRFC 10-311] analyzing module test
 INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sim_1/new/top_bench.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module top_bench

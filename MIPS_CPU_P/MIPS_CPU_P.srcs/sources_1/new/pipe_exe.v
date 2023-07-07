@@ -34,11 +34,11 @@ module pipe_exe #(parameter WIDTH=32, REGBITS=5)(
     output [REGBITS-1:0] exe_rn);
 
     // 用于获得jal所需要的pc+8的独立加法器
-    wire pc8;
+    wire [WIDTH-1:0] pc8;
     cla32 pc_plus8(exe_pc4,32'h4,1'b0,pc8);         // pc+8 for jal
 
     // 获得exe_rn
-    assign exe_rn = exe_jal? exe_rn0 : 5'b11111;    // jal指令规定的$31
+    assign exe_rn = exe_jal? 5'b11111 : exe_rn0;    // jal指令规定的$31
 
     // 计算exe_alu0
     wire [WIDTH-1:0] alu_a;

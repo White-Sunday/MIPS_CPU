@@ -65,7 +65,7 @@ module pipe_id #(parameter WIDTH=32, REGBITS=5)(
     wire sign_ext;              // 是否符号位拓展
     wire [WIDTH-1:0] qa,qb;
     wire [1:0] fwd_a,fwd_b;     // forward a,b 得到id_a,id_b的前递选择信号
-    wire rs_rt_equ = ~|(qa^qb); // reg[rs]==reg[rt]
+    wire rs_rt_equ = ~|(id_a^id_b);     // reg[rs]==reg[rt] 年轻了,这里也要考虑到前递设计
 
     // 寄存器组
     regfile#(WIDTH, REGBITS) rf(~clk,clrn,wb_rwd,rs,rt,wb_rn,wb_wreg,qa,qb);    // ~clk实现clk下降沿写寄存器,以解决一部分数据冲突

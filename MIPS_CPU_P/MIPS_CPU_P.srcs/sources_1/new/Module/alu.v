@@ -57,6 +57,6 @@ module alu #(parameter WIDTH=32)(
     mux2x32 xl_sel(xor_r,lui_r,aluc[2],xl_r);
     shift#(WIDTH) shifter(b,a[4:0],aluc[2],aluc[3],sh_r);
     
-    mux4x32 r_sel(add_sub_r,and_or_r,xor_lui_r,sh_r,aluc[1:0],r);
+    mux4x32 r_sel(as_r,ao_r,xl_r,sh_r,aluc[1:0],r);
     assign z = ~|r;
 endmodule
