@@ -31,7 +31,8 @@ module pipe_exe #(parameter WIDTH=32, REGBITS=5)(
     input exe_alu_imm,
     input exe_jal,
     output [WIDTH-1:0] exe_alu,
-    output [REGBITS-1:0] exe_rn);
+    output [REGBITS-1:0] exe_rn,
+    output ov);
 
     // 用于获得jal所需要的pc+8的独立加法器
     wire [WIDTH-1:0] pc8;
@@ -48,7 +49,7 @@ module pipe_exe #(parameter WIDTH=32, REGBITS=5)(
     wire [WIDTH-1:0] sa = {27'h0,exe_imm[10:6]};    // shift amount
     mux2x32 alu_a_sel(exe_a,sa,exe_shift,alu_a);
     mux2x32 alu_b_sel(exe_b,exe_imm,exe_alu_imm,alu_b);
-    alu#(WIDTH) au(alu_a,alu_b,exe_aluc,exe_alu0,z);
+    alu#(WIDTH) au(alu_a,alu_b,exe_aluc,exe_alu0,z,ov);
 
     // 获得exe_alu: 从exe_alu0和pc+8中选择一个作为exe_alu
     mux2x32 ealu_sel(exe_alu0,pc8,exe_jal,exe_alu);

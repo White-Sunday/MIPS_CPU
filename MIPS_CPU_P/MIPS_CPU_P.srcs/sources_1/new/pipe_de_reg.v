@@ -38,7 +38,7 @@ module pipe_de_reg #(parameter WIDTH=32, REGBITS=5)(
     output reg [WIDTH-1:0] exe_a,
     output reg [WIDTH-1:0] exe_b,
     output reg [WIDTH-1:0] exe_imm,
-    output reg [WIDTH-1:0] exe_rn0,
+    output reg [REGBITS-1:0] exe_rn0,
     output reg [WIDTH-1:0] exe_pc4,
     output reg [3:0] exe_aluc,
     output reg exe_wreg,

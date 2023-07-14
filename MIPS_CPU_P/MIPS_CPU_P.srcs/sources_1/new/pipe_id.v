@@ -42,7 +42,7 @@ module pipe_id #(parameter WIDTH=32, REGBITS=5)(
     output [WIDTH-1:0] id_imm,  // ID段得到的imm(一般的imm和shift指令的shamt)
     output [WIDTH-1:0] b_pc,    // 条件分支目标branch_pc(beq,bne)
     output [WIDTH-1:0] j_pc,    // 无条件分支目标jump_pc(j,jal)
-    output [WIDTH-1:0] id_rn,   // ID段得到的写目标寄存器地址
+    output [REGBITS-1:0] id_rn, // ID段得到的写目标寄存器地址
     output [1:0] pc_src,    // next pc选择信号
     output pc_ir_wen,       // pc,if/id流水寄存器写使能信号,通过它可以完成IF段和ID段的流水阻塞(停止更新)
     output id_wreg,         // 寄存器写信号

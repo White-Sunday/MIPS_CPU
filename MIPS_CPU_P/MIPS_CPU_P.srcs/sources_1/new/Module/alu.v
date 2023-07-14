@@ -20,7 +20,7 @@
 // 0011 SLL
 // 0111 SRL
 // 1111 SRA
-// alu的设计思路
+// alu的设计思路(实际上用casex更加简单)
 // 将9种计算分为四组: 1.ADD,SUB 2.AND,OR 3.XOR,LUI 4.SLL,SRL,SRA
 // 由aluc[1:0]来决定结果是哪一组
 // aluc[2]来进行1,2,3组的组内区分，
@@ -39,7 +39,8 @@ module alu #(parameter WIDTH=32)(
     input [WIDTH-1:0] b,        // alu操作数b
     input [3:0] aluc,           // alu操作控制信息
     output [WIDTH-1:0] r,       // alu运算结果
-    output z);                  // 结果是否为0
+    output z,                   // 结果是否为0
+    output ov);                 // 是否溢出
 
     wire [WIDTH-1:0] add_r,sub_r,as_r;  // add_sub_r
     wire [WIDTH-1:0] and_r,or_r,ao_r;   // and_or_r
@@ -59,4 +60,8 @@ module alu #(parameter WIDTH=32)(
     
     mux4x32 r_sel(as_r,ao_r,xl_r,sh_r,aluc[1:0],r);
     assign z = ~|r;
+    assign ov = (aluc[2:0]==3'b000&~a[31]&~b[31]&r[31]) |   // ADD 正加正得负
+                (aluc[2:0]==3'b000&a[31]&b[31]&~r[31]) |    // ADD 负加负得正
+                (aluc[2:0]==3'b100&~a[31]&b[31]&r[31]) |    // SUB 正减负得负
+                (aluc[2:0]==3'b100&a[31]&~b[31]&~r[31]);    // SUB 负减正得正
 endmodule

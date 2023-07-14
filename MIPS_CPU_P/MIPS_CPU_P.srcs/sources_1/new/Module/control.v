@@ -47,16 +47,16 @@ module control #(parameter WIDTH=32)(
     output pc_ir_wen);
 
     // 指令译码
-    wire rtype = (op == 6'b000000);                 // R型指令
-    wire i_add = rtype & (func == 6'b100000);       //  这里的i_前缀指的是instruction
-    wire i_sub = rtype & (func == 6'b100010);
-    wire i_and = rtype & (func == 6'b100100);
-    wire i_or = rtype & (func == 6'b100101);
-    wire i_xor = rtype & (func == 6'b100110);
-    wire i_sll = rtype & (func == 6'b000000);
-    wire i_srl = rtype & (func == 6'b000010);
-    wire i_sra = rtype & (func == 6'b000011);
-    wire i_jr = rtype & (func == 6'b001000);
+    wire r_type = (op == 6'b000000);                 // R型指令
+    wire i_add = r_type & (func == 6'b100000);       //  这里的i_前缀指的是instruction
+    wire i_sub = r_type & (func == 6'b100010);
+    wire i_and = r_type & (func == 6'b100100);
+    wire i_or = r_type & (func == 6'b100101);
+    wire i_xor = r_type & (func == 6'b100110);
+    wire i_sll = r_type & (func == 6'b000000);
+    wire i_srl = r_type & (func == 6'b000010);
+    wire i_sra = r_type & (func == 6'b000011);
+    wire i_jr = r_type & (func == 6'b001000);
     wire i_addi = (op == 6'b001000);                // I型指令
     wire i_andi = (op == 6'b001100);
     wire i_ori = (op == 6'b001101);

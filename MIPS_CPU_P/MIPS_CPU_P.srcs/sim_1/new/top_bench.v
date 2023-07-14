@@ -29,8 +29,10 @@ module top_bench();
     wire [31:0] exe_alu;         // EXE段得到的alu计算结果
     wire [31:0] mem_alu;         // MEM段的alu计算结果
     wire [31:0] wb_rwd;
+    wire intr;
+    wire inta;
 
-    mips_cpu cpu(clk,reset,pc,id_instr,exe_alu,mem_alu,wb_rwd);
+    mips_cpu cpu(clk,reset,intr,pc,id_instr,exe_alu,mem_alu,wb_rwd,inta);
 
     // reg [31:0] a;
     // reg [31:0] b;
