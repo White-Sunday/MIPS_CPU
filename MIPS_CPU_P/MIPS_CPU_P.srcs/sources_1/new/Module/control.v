@@ -68,13 +68,24 @@ module control #(parameter WIDTH=32)(
     wire i_lui = (op == 6'b001111);
     wire i_j = (op == 6'b000010);                   // J型指令
     wire i_jal = (op == 6'b000011);
+    // 异常/中断有关指令(cu里只用到了mfc0和mtc0)
+    wire c0_type = (op == 6'b010000);
+    wire i_mfc0 = c0_type & (rs == 5'b00000);
+    wire i_mtc0 = c0_type & (rs == 5'b00100);
+    wire i_eret = c0_type & (rs == 5'b10000) & (func == 6'b011000);
+    wire i_syscall = r_type & (func == 6'b001100);
+    // 未实现指令
+    wire unim_instr = ~(i_mfc0 | i_mtc0 | i_eret | i_syscall |
+        i_add | i_sub | i_and | i_or | i_xor | i_sll | i_srl |
+        i_jr | i_addi | i_andi | i_ori | i_xori | i_lw | i_sw | i_beq |
+        i_bne | i_lui | i_j | i_jal);
 
     // 指令是否用到rs
     wire i_rs = i_add | i_sub | i_and | i_or | i_xor | i_jr |
         i_addi | i_andi | i_ori | i_xori | i_lw | i_sw | i_beq | i_bne;
     // 指令是否用到rt
     wire i_rt = i_add | i_sub | i_and | i_or | i_xor | i_jr | i_sll | i_srl | i_sra |
-        i_sw | i_beq | i_bne;
+        i_sw | i_beq | i_bne | i_mtc0;
     
     // stall 即针对IF段和ID段的阻塞信号,用于停止PC和IF/ID流水寄存器的更新
     // 目前只有lw会导致阻塞,注意exe_rn==0不用阻塞,因为lw到0寄存器是没有意义的
@@ -112,12 +123,12 @@ module control #(parameter WIDTH=32)(
 
     // 控制信号
     wire wreg_org = i_add | i_sub | i_and | i_or | i_xor | i_sll | i_srl |
-        i_sra | i_addi | i_andi | i_ori | i_xori | i_lw | i_lui | i_jal;
+        i_sra | i_addi | i_andi | i_ori | i_xori | i_lw | i_lui | i_jal | i_mfc0;
     wire wmem_org = i_sw;
     // 通过取消对reg,mem的写信号,来解决lw命令引发stall导致的后续指令二次执行问题
     assign id_wreg = wreg_org & ~stall; // original_wreg & ~stall 
     assign id_wmem = wmem_org & ~stall; // original_wreg & ~stall
-    assign reg_dest_sel = i_addi | i_andi | i_ori | i_xori | i_lw | i_lui;  // I型指令的写目标寄存器为rt
+    assign reg_dest_sel = i_addi | i_andi | i_ori | i_xori | i_lw | i_lui | i_mfc0; // I型指令和mfc0的写目标寄存器为rt
     assign id_jal = i_jal;
     assign id_m2reg = i_lw;
     assign id_shift = i_sll | i_srl | i_sra;

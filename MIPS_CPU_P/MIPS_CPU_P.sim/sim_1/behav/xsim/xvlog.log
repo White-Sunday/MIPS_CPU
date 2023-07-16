@@ -37,7 +37,8 @@ WARNING: [VRFC 10-9336] redeclaration of ANSI port 'wb_rwd' is not allowed [D:/D
 WARNING: [VRFC 10-2938] 'ei_next_pc' is already implicitly declared on line 98 [D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/mips_cpu.v:136]
 WARNING: [VRFC 10-2938] 'id_ei_wreg' is already implicitly declared on line 113 [D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/mips_cpu.v:137]
 WARNING: [VRFC 10-2938] 'id_ei_wmem' is already implicitly declared on line 113 [D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/mips_cpu.v:138]
-WARNING: [VRFC 10-2938] 'exe_ei_alu' is already implicitly declared on line 120 [D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/mips_cpu.v:156]
+WARNING: [VRFC 10-2938] 'ei_pc_src' is already implicitly declared on line 100 [D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/mips_cpu.v:145]
+WARNING: [VRFC 10-2938] 'exe_ei_alu' is already implicitly declared on line 106 [D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/mips_cpu.v:157]
 INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/DigitalLogic/mux2x32.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module mux2x32
 INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/DigitalLogic/mux2x5.v" into library xil_defaultlib

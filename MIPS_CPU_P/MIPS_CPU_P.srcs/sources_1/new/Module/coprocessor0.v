@@ -31,12 +31,12 @@ module coprocessor0 #(parameter WIDTH=32)(
     input [WIDTH-1:0] exe_pc,
     input [WIDTH-1:0] mem_pc,
     input [WIDTH-1:0] id_b,
+    input [1:0] pc_src,             // 传入cu得到的prc_src
     input exe_is_bj,
     input mem_is_bj,
     input exe_cancel,
     input exe_ovr,
     input mem_ovr,
-    input pc_ir_wen,                // 就是~stall
     input id_wreg,
     input id_wmem,
     output [WIDTH-1:0] ei_next_pc,  // 考虑异常/中断后的next_npc
@@ -49,9 +49,10 @@ module coprocessor0 #(parameter WIDTH=32)(
     output [WIDTH-1:0] id_sta,      // status寄存器的内容 IM[3:0]:ov,unimpl,sys,int;在程序里设置其初值,并限制嵌套次数
     output [WIDTH-1:0] id_epc,      // epc寄存器的内容
     output [1:0] id_mfc0,           // move from cp0指令用于选择exe段的pc8,sta,cau与epc做为exe_alu
+    output [1:0] ei_pc_src,         // 经过cp0的处理,可以取消当前BJ指令的执行
     output inta);                   // 中断响应
 
-    parameter ei_base = 32'h00000008;   // 处理程序入口base地址
+    parameter ei_base = 32'h00000008;   // 异常/中断处理服务程序地址
 
     // pc选择有关信号
     wire [1:0] pc_sel;                  // ei_next_pc的选择信号
@@ -132,7 +133,8 @@ module coprocessor0 #(parameter WIDTH=32)(
     // 任务一: 取消对应指令的执行
     assign id_cancel = exc_int | i_eret;            // 异常/中断处理总是删除后面那条指令，eret指令也需要删除后面一条
     assign id_ei_wmem = id_wmem & ~exe_cancel & ~exe_ovr & ~mem_ovr;
-    assign id_ei_wreg = (id_wreg | i_mfc0 & pc_ir_wen) & ~exe_cancel & ~exe_ovr & ~mem_ovr; // 要加上i_mfc0指令
+    assign id_ei_wreg = id_wreg & ~exe_cancel & ~exe_ovr & ~mem_ovr; // 要加上i_mfc0指令
+    assign ei_pc_src = (exe_cancel | exe_ovr | mem_ovr)? 2'b00 : pc_src;
 
     // 任务二: cp0寄存器更新
     // cause

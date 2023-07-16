@@ -96,14 +96,14 @@ module mips_cpu #(parameter WIDTH=32, ADDR=32, REGBITS=5)(
 
     // pc(program counter) ei_next_pc涉及异常/中断处理,原为next_pc
     pipe_pc#(WIDTH) prog_cnt(clk,clrn,pc_ir_wen,ei_next_pc,pc);
-    // IF段
-    pipe_if#(WIDTH, ADDR) if_stage(pc_src,pc,b_pc,id_a,j_pc,next_pc,pc4,instr);
+    // IF段 ei_pc_src涉及异常/中断处理,原为pc_src
+    pipe_if#(WIDTH, ADDR) if_stage(ei_pc_src,pc,b_pc,id_a,j_pc,next_pc,pc4,instr);
 
     // IF-ID 流水寄存器
     pipe_fd_reg#(WIDTH) fd_reg(clk,clrn,pc_ir_wen,pc4,instr,id_pc4,id_instr);
-    // ID段
+    // ID段  exe_ei_alu涉及异常/中断处理,原为exe_alu
     pipe_id#(WIDTH, REGBITS) id_stage(clk,clrn,id_pc4,id_instr,
-        wb_rwd,exe_alu,mem_alu,mem_mrd,exe_rn,mem_rn,wb_rn,
+        wb_rwd,exe_ei_alu,mem_alu,mem_mrd,exe_rn,mem_rn,wb_rn,
         exe_wreg,exe_m2reg,mem_wreg,mem_m2reg,wb_wreg,
         id_a,id_b,id_imm,b_pc,j_pc,id_rn,
         pc_src,pc_ir_wen,id_wreg,id_m2reg,id_wmem,id_jal,id_aluc,id_shift,id_alu_imm);
@@ -142,6 +142,7 @@ module mips_cpu #(parameter WIDTH=32, ADDR=32, REGBITS=5)(
     wire [WIDTH-1:0] id_cau;            // cause寄存器的内容
     wire [WIDTH-1:0] id_sta;            // status寄存器的内容 IM[3:0]:ov,unimpl,sys,int;在程序里设置其初值,并限制嵌套次数
     wire [WIDTH-1:0] id_epc;            // epc寄存器的内容
+    wire [1:0] ei_pc_src;               // 经过cp0的处理,可以取消BJ指令的执行
     wire [1:0] id_mfc0;                 // move from cp0指令用于选择exe段的pc8,sta,cau与epc做为exe_alu
     // EXE段信号
     reg [WIDTH-1:0] exe_cau;
@@ -164,10 +165,10 @@ module mips_cpu #(parameter WIDTH=32, ADDR=32, REGBITS=5)(
     dffe32 fd_pc(pc,clk,clrn,pc_ir_wen,id_pc);
     dff fd_intr(intr,clk,clrn,id_intr);
     // ID段
-    coprocessor0#(WIDTH) cp0(clk,clrn,id_intr,id_instr,next_pc,pc,id_pc,exe_pc,mem_pc,
-        id_b,exe_is_bj,mem_is_bj,exe_cancel,exe_ovr,mem_ovr,pc_ir_wen,id_wreg,
+    coprocessor0#(WIDTH) cp0(clk,clrn,id_intr,id_instr,next_pc,pc,id_pc,exe_pc,
+        mem_pc,id_b,pc_src,exe_is_bj,mem_is_bj,exe_cancel,exe_ovr,mem_ovr,id_wreg,
         id_wmem,ei_next_pc,id_ei_wreg,id_ei_wmem,id_is_bj,id_ov_en,id_cancel,
-        id_cau,id_sta,id_epc,id_mfc0,inta);
+        id_cau,id_sta,id_epc,id_mfc0,ei_pc_src,inta);
     
     // DE流水寄存器
     always @(posedge clk or negedge clrn) begin
