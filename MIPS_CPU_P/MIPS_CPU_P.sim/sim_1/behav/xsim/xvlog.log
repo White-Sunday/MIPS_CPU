@@ -2,6 +2,8 @@ INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_
 INFO: [VRFC 10-311] analyzing module add
 INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Module/alu.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module alu
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Module/coprocessor0/c0_control.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module c0_control
 INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Arithmetic/CLA/cla32.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module cla32
 INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Arithmetic/CLA/cla_16.v" into library xil_defaultlib
@@ -16,7 +18,7 @@ INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_
 INFO: [VRFC 10-311] analyzing module cla_8
 INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Module/control.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module control
-INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Module/coprocessor0.v" into library xil_defaultlib
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Module/coprocessor0/coprocessor0.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module coprocessor0
 INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Module/data_mem.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module data_mem
@@ -30,15 +32,6 @@ INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_
 INFO: [VRFC 10-311] analyzing module inst_mem
 INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/mips_cpu.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module mips_cpu
-WARNING: [VRFC 10-9336] redeclaration of ANSI port 'id_instr' is not allowed [D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/mips_cpu.v:42]
-WARNING: [VRFC 10-9336] redeclaration of ANSI port 'exe_alu' is not allowed [D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/mips_cpu.v:65]
-WARNING: [VRFC 10-9336] redeclaration of ANSI port 'mem_alu' is not allowed [D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/mips_cpu.v:79]
-WARNING: [VRFC 10-9336] redeclaration of ANSI port 'wb_rwd' is not allowed [D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/mips_cpu.v:90]
-WARNING: [VRFC 10-2938] 'ei_next_pc' is already implicitly declared on line 98 [D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/mips_cpu.v:136]
-WARNING: [VRFC 10-2938] 'id_ei_wreg' is already implicitly declared on line 113 [D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/mips_cpu.v:137]
-WARNING: [VRFC 10-2938] 'id_ei_wmem' is already implicitly declared on line 113 [D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/mips_cpu.v:138]
-WARNING: [VRFC 10-2938] 'ei_pc_src' is already implicitly declared on line 100 [D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/mips_cpu.v:145]
-WARNING: [VRFC 10-2938] 'exe_ei_alu' is already implicitly declared on line 106 [D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/mips_cpu.v:157]
 INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/DigitalLogic/mux2x32.v" into library xil_defaultlib
 INFO: [VRFC 10-311] analyzing module mux2x32
 INFO: [VRFC 10-2263] Analyzing Verilog file "D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/DigitalLogic/mux2x5.v" into library xil_defaultlib

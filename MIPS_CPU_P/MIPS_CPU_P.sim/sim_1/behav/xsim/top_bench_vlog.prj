@@ -2,6 +2,7 @@
 verilog xil_defaultlib  \
 "../../../../MIPS_CPU_P.srcs/sources_1/new/Arithmetic/CLA/add.v" \
 "../../../../MIPS_CPU_P.srcs/sources_1/new/Module/alu.v" \
+"../../../../MIPS_CPU_P.srcs/sources_1/new/Module/coprocessor0/c0_control.v" \
 "../../../../MIPS_CPU_P.srcs/sources_1/new/Arithmetic/CLA/cla32.v" \
 "../../../../MIPS_CPU_P.srcs/sources_1/new/Arithmetic/CLA/cla_16.v" \
 "../../../../MIPS_CPU_P.srcs/sources_1/new/Arithmetic/CLA/cla_2.v" \
@@ -9,7 +10,7 @@ verilog xil_defaultlib  \
 "../../../../MIPS_CPU_P.srcs/sources_1/new/Arithmetic/CLA/cla_4.v" \
 "../../../../MIPS_CPU_P.srcs/sources_1/new/Arithmetic/CLA/cla_8.v" \
 "../../../../MIPS_CPU_P.srcs/sources_1/new/Module/control.v" \
-"../../../../MIPS_CPU_P.srcs/sources_1/new/Module/coprocessor0.v" \
+"../../../../MIPS_CPU_P.srcs/sources_1/new/Module/coprocessor0/coprocessor0.v" \
 "../../../../MIPS_CPU_P.srcs/sources_1/new/Module/data_mem.v" \
 "../../../../MIPS_CPU_P.srcs/sources_1/new/DigitalLogic/dff.v" \
 "../../../../MIPS_CPU_P.srcs/sources_1/new/DigitalLogic/dffe32.v" \

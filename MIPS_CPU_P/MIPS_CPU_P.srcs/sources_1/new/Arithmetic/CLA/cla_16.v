@@ -1,3 +1,5 @@
+`timescale 1ns / 1ps
+
 module cla_16 (a,b,c_in,g_out,p_out,s);
 	input [15:0] a,b;
 	input c_in;

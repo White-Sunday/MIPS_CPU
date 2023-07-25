@@ -1,3 +1,5 @@
+`timescale 1ns / 1ps
+
 module cla_2 (a,b,c_in,g_out,p_out,s);	// 2-bit carry lookahead adder
 	input [1:0] a,b;
 	input c_in;

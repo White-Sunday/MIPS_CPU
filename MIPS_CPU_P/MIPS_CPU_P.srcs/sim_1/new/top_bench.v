@@ -23,22 +23,15 @@
 module top_bench();
     reg clk;
     reg reset;
-
-    wire [31:0] pc;
-    wire [31:0] id_instr;        // ID段的指令
-    wire [31:0] exe_alu;         // EXE段得到的alu计算结果
-    wire [31:0] mem_alu;         // MEM段的alu计算结果
-    wire [31:0] wb_rwd;
     reg intr;
     wire inta;
 
-    mips_cpu cpu(clk,reset,intr,pc,id_instr,exe_alu,mem_alu,wb_rwd,inta);
+    mips_cpu cpu(clk,reset,intr,inta);
 
     // reg [31:0] a;
     // reg [31:0] b;
     // reg ci;
     // wire [31:0] s;
-
     // test test_soc(a,b,ci,s);
 
     
@@ -50,10 +43,12 @@ module top_bench();
         #22;
         reset <= 1;
         #598
-        intr <= 1;
+        // 一般情况中断
+        // intr <= 1;
         #10;
-        intr <= 0;
-        #40
+        // intr <= 0;
+        #50
+        // BJ指令ID段发生中断
         intr <= 1;
         #10;
         intr <= 0;

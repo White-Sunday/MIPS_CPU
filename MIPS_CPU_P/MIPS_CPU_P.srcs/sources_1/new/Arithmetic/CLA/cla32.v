@@ -1,3 +1,5 @@
+`timescale 1ns / 1ps
+
 module cla32 (a,b,ci,s);
 	input [31:0] a, b;
 	input ci;
