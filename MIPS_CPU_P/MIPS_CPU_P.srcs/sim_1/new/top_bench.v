@@ -25,8 +25,12 @@ module top_bench();
     reg reset;
     reg intr;
     wire inta;
+    wire ein1 = 1'b1;
+    wire ein2 = 1'b1;
+    wire st = 1'b0;
 
-    mips_cpu cpu(clk,reset,intr,inta);
+
+    iu_fpu_ei cpu(clk,reset,ein1,ein2,st,intr,inta);
 
     // reg [31:0] a;
     // reg [31:0] b;

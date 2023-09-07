@@ -23,14 +23,18 @@
 module pipe_exe #(parameter WIDTH=32, REGBITS=5)(
     input [WIDTH-1:0] exe_a,
     input [WIDTH-1:0] exe_b,
+    input [WIDTH-1:0] exe_mwd0,
+    input [WIDTH-1:0] exe_d,
     input [WIDTH-1:0] exe_imm,
     input [WIDTH-1:0] exe_pc4,
     input [REGBITS-1:0] exe_rn0,
     input [3:0] exe_aluc,
+    input exe_fwd_fe,
     input exe_shift,
     input exe_alu_imm,
     input exe_jal,
     output [WIDTH-1:0] exe_alu,
+    output [WIDTH-1:0] exe_mwd,
     output [REGBITS-1:0] exe_rn,
     output ov);
 
@@ -53,4 +57,7 @@ module pipe_exe #(parameter WIDTH=32, REGBITS=5)(
 
     // 获得exe_alu: 从exe_alu0和pc+8中选择一个作为exe_alu
     mux2x32 ealu_sel(exe_alu0,pc8,exe_jal,exe_alu);
+
+    // EXE段forward后的mem写数据
+    mux2x32 fwd_f_exe (exe_mwd0,exe_d,exe_fwd_fe,exe_mwd);  // swc1 forward: e3->exe
 endmodule

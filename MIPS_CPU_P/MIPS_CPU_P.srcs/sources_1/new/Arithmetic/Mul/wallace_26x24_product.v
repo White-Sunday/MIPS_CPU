@@ -5,13 +5,13 @@
 // 
 // Create Date: 2023/07/03 23:30:31
 // Design Name: 
-// Module Name: rom
+// Module Name: coprocessor1
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
 // Description: 
 // 
-// Dependencies: 
+// Dependencies: 26*24 wallacetree product
 // 
 // Revision:
 // Revision 0.01 - File Created
@@ -20,13 +20,15 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module rom(
-    input [9:0] addr,
-    output [31:0] read_data);
-
-    reg [31:0] bit_array[1023:0];
-    initial begin
-        $readmemh("D:/Data/Code/Verilog/MIPS_CPU/MIPS_CPU_P/MIPS_CPU_P.srcs/sources_1/new/Module/memfile.dat",bit_array);
-    end
-    assign read_data = bit_array[addr];
+module wallace_26x24_product (a,b,z);	// 26*24 wallacetree product
+	input [25:0] a;
+	input [23:0] b;
+	output [49:0] z;
+	wire [49:8] x;
+	wire [49:8] y;
+	wire [49:8] z_high;
+	wire [7:0] z_low;
+	wallace_26x24 wt_partial (a,b,x,y,z_low);
+	assign z_high = x+y;
+	assign z = {z_high, z_low};	// product
 endmodule
