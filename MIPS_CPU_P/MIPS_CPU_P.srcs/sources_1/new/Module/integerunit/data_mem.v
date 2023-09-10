@@ -22,7 +22,7 @@
 
 module data_mem #(parameter WIDTH=32, ADDR=32)(
     input clk,
-    input [WIDTH-1:0] addr,
+    input [ADDR-1:0] addr,
     input [WIDTH-1:0] data_in,
     input we,
     output [WIDTH-1:0] data_out);

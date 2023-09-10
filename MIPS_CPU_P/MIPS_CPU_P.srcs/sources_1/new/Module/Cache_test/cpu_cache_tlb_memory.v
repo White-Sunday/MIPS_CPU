@@ -5,7 +5,7 @@
 // 
 // Create Date: 2023/07/03 23:30:31
 // Design Name: 
-// Module Name: pipe_mem
+// Module Name: cpu_cache_tlb_memory
 // Project Name: 
 // Target Devices: 
 // Tool Versions: 
@@ -19,13 +19,15 @@
 // 
 //////////////////////////////////////////////////////////////////////////////////
 
-
-module pipe_mem #(parameter WIDTH=32, ADDR=32)(
+module cpu_cache_tlb_memory #(parameter WIDTH=32)(
     input clk,
-    input [ADDR-1:0] addr,
-    input [WIDTH-1:0] data_in,      // data in (to mem)
-    input we,                       // 存储器写信号
-    output [WIDTH-1:0] data_out);   // data out (from mem)
-
-    data_mem#(WIDTH,ADDR) d_mem(clk,addr,data_in,we,data_out);
+    input memclk,
+    input clrn,
+    output [WIDTH-1:0] v_pc,
+    output [WIDTH-1:0] pc,
+    output [WIDTH-1:0] instr,
+    output [WIDTH-1:0] ealu,
+    output [WIDTH-1:0] malu,
+    output [WIDTH-1:0] 
+);
 endmodule
