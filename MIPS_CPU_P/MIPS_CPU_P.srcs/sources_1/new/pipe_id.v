@@ -25,18 +25,13 @@ module pipe_id #(parameter WIDTH=32, REGBITS=5)(
     input clrn,
     input [WIDTH-1:0] id_pc4,   // ID段的pc+4
     input [WIDTH-1:0] id_instr, // ID段的指令
-    input [WIDTH-1:0] dfb,
     input [WIDTH-1:0] wb_rwd,   // WB段得到的写入寄存器数据(reg write data)
     input [WIDTH-1:0] exe_alu,  // EXE段得到的alu计算结果
     input [WIDTH-1:0] mem_alu,  // MEM段的alu计算结果
     input [WIDTH-1:0] mem_mrd,  // MEM段得到的存储器读数据
-    input [WIDTH-1:0] exe_d,    // e3段得到的float data
     input [REGBITS-1:0] exe_rn, // EXE段得到的写目标寄存器地址
     input [REGBITS-1:0] mem_rn, // MEM段的写目标寄存器地址
     input [REGBITS-1:0] wb_rn,  // WB段的写目标寄存器地址
-    input pc_ir_wen,
-    input swfp,
-    input fwd_f,
     input exe_wreg,             // EXE段的寄存器写信号
     input exe_m2reg,            // EXE段的存储到寄存器数据传递信号
     input mem_wreg,             // MEM段的存储器写信号
@@ -44,20 +39,19 @@ module pipe_id #(parameter WIDTH=32, REGBITS=5)(
     input wb_wreg,              // WB段的寄存器写信号
     output [WIDTH-1:0] id_a,    // ID段得到的alu操作数a/jr分支目标
     output [WIDTH-1:0] id_b,    // ID段得到的alu操作数b
-    output [WIDTH-1:0] id_mwd,  // ID段得到的mem写数据
     output [WIDTH-1:0] id_imm,  // ID段得到的imm(一般的imm和shift指令的shamt)
     output [WIDTH-1:0] b_pc,    // 条件分支目标branch_pc(beq,bne)
     output [WIDTH-1:0] j_pc,    // 无条件分支目标jump_pc(j,jal)
     output [REGBITS-1:0] id_rn, // ID段得到的写目标寄存器地址
-    output [1:0] pc_src,        // next pc选择信号
-    output stl_lw,              // stall lw
-    output id_wreg,             // 寄存器写信号
-    output id_m2reg,            // 存储到寄存器数据传递信号
-    output id_wmem,             // 存储器写信号
-    output id_jal,              // 表明当前指令是jal
-    output [3:0] id_aluc,       // alu操作控制信号 alu control
-    output id_shift,            // 为1代表alu的a操作数是shift,一般用于shift类指令
-    output id_alu_imm);         // 为1代表alu的b操作数是imm,一般用于i型指令、访存指令地址计算
+    output [1:0] pc_src,    // next pc选择信号
+    output pc_ir_wen,       // pc,if/id流水寄存器写使能信号,通过它可以完成IF段和ID段的流水阻塞(停止更新)
+    output id_wreg,         // 寄存器写信号
+    output id_m2reg,        // 存储到寄存器数据传递信号
+    output id_wmem,         // 存储器写信号
+    output id_jal,          // 表明当前指令是jal
+    output [3:0] id_aluc,   // alu操作控制信号 alu control
+    output id_shift,        // 为1代表alu的a操作数是shift,一般用于shift类指令
+    output id_alu_imm);     // 为1代表alu的b操作数是imm,一般用于i型指令、访存指令地址计算
 
     wire [5:0] op = id_instr[31:26];
     wire [4:0] rs = id_instr[25:21];
@@ -77,9 +71,9 @@ module pipe_id #(parameter WIDTH=32, REGBITS=5)(
     regfile#(WIDTH, REGBITS) rf(~clk,clrn,wb_rwd,rs,rt,wb_rn,wb_wreg,qa,qb);    // ~clk实现clk下降沿写寄存器,以解决一部分数据冲突
 
     // control unit
-    control#(WIDTH, REGBITS) cu(op,func,rs,rt,exe_rn,mem_rn,exe_wreg,exe_m2reg,mem_wreg,mem_m2reg,
-        rs_rt_equ,pc_ir_wen,id_aluc,pc_src,fwd_a,fwd_b,id_wreg,id_m2reg,id_wmem,
-        id_alu_imm,id_shift,id_jal,reg_dest_sel,sign_ext,stl_lw);
+    control#(WIDTH) cu(op,func,rs,rt,exe_rn,mem_rn,exe_wreg,exe_m2reg,mem_wreg,mem_m2reg,
+        rs_rt_equ,id_aluc,pc_src,fwd_a,fwd_b,id_wreg,id_m2reg,id_wmem,
+        id_alu_imm,id_shift,id_jal,reg_dest_sel,sign_ext,pc_ir_wen);
 
     // rn选择
     mux2x5 dest_reg(rd,rt,reg_dest_sel,id_rn);      // 选择dest reg
@@ -95,8 +89,4 @@ module pipe_id #(parameter WIDTH=32, REGBITS=5)(
     assign j_pc = {id_pc4[31:28],j_addr,2'b00};         // 得到j_pc
     cla32 b_pc_adr(id_pc4,b_offset,1'b0,b_pc);          // 得到b_pc: adr for branch pc
 
-    // ID段得到mem写数据
-    wire [WIDTH-1:0] id_mwd_tmp;
-    mux2x32 store_f (id_b,dfb,swfp,id_mwd_tmp);         // swc1
-    mux2x32 fwd_f_id (id_mwd_tmp,exe_d,fwd_f,id_mwd);   // swc1 forward             // swc1 forward
 endmodule

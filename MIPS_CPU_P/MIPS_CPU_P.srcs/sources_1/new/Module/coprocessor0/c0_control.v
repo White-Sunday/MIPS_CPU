@@ -23,6 +23,9 @@
 module c0_control #(parameter WIDTH=32)(
     input clk,
     input clrn,
+    input [1:0] pc_src,
+    input id_wreg,
+    input id_wmem,
     input id_intr,
     input [WIDTH-1:0] id_instr,
     input [WIDTH-1:0] id_sta,
@@ -32,14 +35,15 @@ module c0_control #(parameter WIDTH=32)(
     input exe_cancel,
     input mem_is_bj,
     input mem_ovr,
-    output ei_wen,                      // 写信号 & ei_wen
-    output ei_bj,                       // ei_pc_src = ei_bj ? 2'b00 : pc_src
-    output ei_stl,                      // ei_pc_ir_wen = pc_ir_wen | ei_stl
+    output [1:0] ei_pc_src,
     output [1:0] pc_sel,
+    output id_ei_wreg,
+    output id_ei_wmem,
     output id_is_bj,
     output id_ov_en,
     output id_cancel,
     output [1:0] id_mfc0,
+    output ei_pc_ir_wen,
     output mtc0,
     output exc_int,
     output [1:0] epc_sel,
@@ -101,17 +105,12 @@ module c0_control #(parameter WIDTH=32)(
         i_jr | i_addi | i_andi | i_ori | i_xori | i_lw | i_sw | i_beq |
         i_bne | i_lui | i_j | i_jal);
     
-    // // 指令取消有关信号
-    // assign id_cancel = exc_int | i_eret;                                // 异常/中断处理总是删除后面那条指令，eret指令也需要删除后面一条
-    // assign id_ei_wmem = id_wmem & ~exe_cancel & ~exe_ovr & ~mem_ovr;
-    // assign id_ei_wreg = id_wreg & ~exe_cancel & ~exe_ovr & ~mem_ovr;    // 要加上i_mfc0指令
-    // assign ei_pc_src = (exe_cancel | exe_ovr | mem_ovr)? 2'b00 : pc_src;
-    // assign ei_pc_ir_wen = pc_ir_wen | (id_cancel | exe_cancel | exe_ovr | mem_ovr); // 正在触发的流水阻塞需要取消+需要被取消的指令不能引发流水阻塞
     // 指令取消有关信号
     assign id_cancel = exc_int | i_eret;                                // 异常/中断处理总是删除后面那条指令，eret指令也需要删除后面一条
-    assign ei_wen = ~exe_cancel & ~exe_ovr & ~mem_ovr;
-    assign ei_bj = exe_cancel | exe_ovr | mem_ovr; 
-    assign ei_stl = id_cancel | exe_cancel | exe_ovr | mem_ovr;         // 正在触发的流水阻塞需要取消+需要被取消的指令不能引发流水阻
+    assign id_ei_wmem = id_wmem & ~exe_cancel & ~exe_ovr & ~mem_ovr;
+    assign id_ei_wreg = id_wreg & ~exe_cancel & ~exe_ovr & ~mem_ovr;    // 要加上i_mfc0指令
+    assign ei_pc_src = (exe_cancel | exe_ovr | mem_ovr)? 2'b00 : pc_src;
+    assign ei_pc_ir_wen = pc_ir_wen | (id_cancel | exe_cancel | exe_ovr | mem_ovr); // 正在触发的流水阻塞需要取消+需要被取消的指令不能引发流水阻塞
     
     // cp0寄存器更新有关信号
     // exc_int指出发生异常/中断的同时,控制sta寄存器的更新

@@ -25,7 +25,6 @@ module pipe_de_reg #(parameter WIDTH=32, REGBITS=5)(
     input clrn,
     input [WIDTH-1:0] id_a,
     input [WIDTH-1:0] id_b,
-    input [WIDTH-1:0] id_mwd,
     input [WIDTH-1:0] id_imm,
     input [REGBITS-1:0] id_rn,
     input [WIDTH-1:0] id_pc4,
@@ -36,10 +35,8 @@ module pipe_de_reg #(parameter WIDTH=32, REGBITS=5)(
     input id_shift,
     input id_alu_imm,
     input id_jal,
-    input fwd_fe,
     output reg [WIDTH-1:0] exe_a,
     output reg [WIDTH-1:0] exe_b,
-    output reg [WIDTH-1:0] exe_mwd0,
     output reg [WIDTH-1:0] exe_imm,
     output reg [REGBITS-1:0] exe_rn0,
     output reg [WIDTH-1:0] exe_pc4,
@@ -49,15 +46,13 @@ module pipe_de_reg #(parameter WIDTH=32, REGBITS=5)(
     output reg exe_wmem,
     output reg exe_shift,
     output reg exe_alu_imm,
-    output reg exe_jal,
-    output reg exe_fwd_fe);
+    output reg exe_jal);
     
     // 搓个大点的dff(D触发器)
     always @(posedge clk or negedge clrn) begin
         if (!clrn) begin
             exe_a <= 0;
             exe_b <= 0;
-            exe_mwd0 <= 0;
             exe_imm <= 0;
             exe_rn0 <= 0;
             exe_pc4 <= 0;
@@ -68,11 +63,9 @@ module pipe_de_reg #(parameter WIDTH=32, REGBITS=5)(
             exe_shift <= 0;
             exe_alu_imm <= 0;
             exe_jal <= 0;
-            exe_fwd_fe <= 0;
         end else begin
             exe_a <= id_a;
             exe_b <= id_b;
-            exe_mwd0 <= id_mwd;
             exe_imm <= id_imm;
             exe_rn0 <= id_rn;
             exe_pc4 <= id_pc4;
@@ -83,7 +76,6 @@ module pipe_de_reg #(parameter WIDTH=32, REGBITS=5)(
             exe_shift <= id_shift;
             exe_alu_imm <= id_alu_imm;
             exe_jal <= id_jal;
-            exe_fwd_fe <= fwd_fe;
         end
     end
 endmodule

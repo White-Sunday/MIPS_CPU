@@ -11,7 +11,7 @@
 // Tool Versions: 
 // Description: 
 // 
-// Dependencies: 协处理器0-异常中断处理
+// Dependencies: 
 // 
 // Revision:
 // Revision 0.01 - File Created
@@ -26,27 +26,32 @@ module coprocessor0 #(parameter WIDTH=32)(
     input intr,
     input [WIDTH-1:0] pc,
     input [WIDTH-1:0] instr,
+    input [1:0] pc_src,
     input [WIDTH-1:0] next_pc,
     input pc_ir_wen,
     input [WIDTH-1:0] id_b,
+    input id_wreg,
+    input id_wmem,
     input ov,
-    input exe_wreg,                 // (针对溢出)
+    input exe_wreg,
     input [WIDTH-1:0] exe_alu,
-    output [WIDTH-1:0] ei_next_pc,
-    output ei_wen,                  // 经过cp0的处理,可以取消写寄存器/存储器信号------------取消1
-    output ei_bj,                   // 经过cp0的处理,可以取消BJ指令的动作------------------取消2
-    output ei_stl,                  // 经过cp0的处理,可以取消指令可能引发的流水阻塞---------取消3
-    output exe_ei_wreg,             // 经过cp0的处理的exe_wreg,可以取消当前指令的执行(针对溢出)
-    output [WIDTH-1:0] exe_ei_alu,  // 经过cp0的处理的exe_alu,即取出的sta等寄存器(针对溢出)
+    output [1:0] ei_pc_src,         // 经过cp0的处理,可以取消BJ指令的动作------------------取消1
+    output [WIDTH-1:0] ei_next_pc,  // 考虑异常/中断后的next_npc
+    output id_ei_wreg,              // 经过cp0的处理的id_wreg,可以取消指令的写寄存器动作----取消2-1
+    output id_ei_wmem,              // 经过cp0的处理的id_wmem,可以取消指令的写存储器动作----取消2-2
+    output ei_pc_ir_wen,            // 经过cp0的处理,可以取消指令可能引发的流水阻塞---------取消3
+    output exe_ei_wreg,             // 经过cp0的处理的exe_wreg,可以取消当前指令的执行
+    output [WIDTH-1:0] exe_ei_alu,  // 经过cp0的处理的exe_alu,即取出的sta等寄存器
     output inta);                   // 中断响应信号(interrupt aknowledgement)
 
     parameter ei_base = 32'h00000008;   // 异常/中断处理服务程序地址
     
     // IF段信号 
-    // in: intr,pc,instr,next_pc
+    // in: intr,pc,instr,pc_src,next_pc
+    // out:ei_pc_src,ei_next_pc
     // ID段信号
-    // in: pc_ir_wen,id_b
-    // out:ei_wen,ei_bj,ei_stl
+    // in: pc_ir_wen,id_b,id_wreg,id_wmem
+    // out:id_ei_wreg,id_ei_wmem
     wire id_intr;                       // ID段的intr
     wire [WIDTH-1:0] id_pc;             // ID段的pc
     wire [WIDTH-1:0] id_instr;          // ID段的instr
@@ -72,7 +77,7 @@ module coprocessor0 #(parameter WIDTH=32)(
     wire wepc;                          // epc寄存器写信号
     // EXE段信号
     // in: ov,exe_wreg,exe_alu
-    // out:exe_ei_wreg,exe_ei_alu
+    // out:exe_id_wreg,exe_ei_alu
     reg [WIDTH-1:0] exe_cau;
     reg [WIDTH-1:0] exe_sta;
     reg [WIDTH-1:0] exe_epc;
@@ -88,7 +93,7 @@ module coprocessor0 #(parameter WIDTH=32)(
     reg mem_ovr;
     
     // PC(无)
-    // IF段
+    // IF段(无)
     mux4x32 ei_npc_cntr(next_pc,id_epc,ei_base,32'h0,pc_sel,ei_next_pc);
     // FD流水寄存器
     dffe32 fd_pc(pc,clk,clrn,ei_pc_ir_wen,id_pc);
@@ -96,8 +101,9 @@ module coprocessor0 #(parameter WIDTH=32)(
     dff fd_intr(intr,clk,clrn,id_intr);
     // ID段
     // c0 cu
-    c0_control c0_cu(clk,clrn,id_intr,id_instr,id_sta,pc_ir_wen,exe_is_bj,exe_ovr,exe_cancel,mem_is_bj,mem_ovr,
-        ei_wen,ei_bj,ei_stl,pc_sel,id_is_bj,id_ov_en,id_cancel,id_mfc0,mtc0,exc_int,epc_sel,cause,wcau,wsta,wepc,inta);
+    c0_control c0_cu(clk,clrn,pc_src,id_wreg,id_wmem,id_intr,id_instr,id_sta,pc_ir_wen,exe_is_bj,
+        exe_ovr,exe_cancel,mem_is_bj,mem_ovr,ei_pc_src,pc_sel,id_ei_wreg,id_ei_wmem,
+        id_is_bj,id_ov_en,id_cancel,id_mfc0,ei_pc_ir_wen,mtc0,exc_int,epc_sel,cause,wcau,wsta,wepc,inta);
     // status和epc
     mux2x32 sta_left_right({4'h0,id_sta[31:4]},{id_sta[27:0],4'h0},exc_int,sta_lr);
     mux4x32 epc_src(pc,id_pc,exe_pc,mem_pc,epc_sel,epc_in0);
