@@ -29,7 +29,6 @@ module c0_control #(parameter WIDTH=32)(
     input id_intr,
     input [WIDTH-1:0] id_instr,
     input [WIDTH-1:0] id_sta,
-    input pc_ir_wen,
     input exe_is_bj,
     input exe_ovr,
     input exe_cancel,
@@ -43,7 +42,6 @@ module c0_control #(parameter WIDTH=32)(
     output id_ov_en,
     output id_cancel,
     output [1:0] id_mfc0,
-    output ei_pc_ir_wen,
     output mtc0,
     output exc_int,
     output [1:0] epc_sel,
@@ -106,11 +104,10 @@ module c0_control #(parameter WIDTH=32)(
         i_bne | i_lui | i_j | i_jal);
     
     // 指令取消有关信号
-    assign id_cancel = exc_int | i_eret;                                // 异常/中断处理总是删除后面那条指令，eret指令也需要删除后面一条
+    assign id_cancel = exc_int | i_eret;            // 异常/中断处理总是删除后面那条指令，eret指令也需要删除后面一条
     assign id_ei_wmem = id_wmem & ~exe_cancel & ~exe_ovr & ~mem_ovr;
-    assign id_ei_wreg = id_wreg & ~exe_cancel & ~exe_ovr & ~mem_ovr;    // 要加上i_mfc0指令
+    assign id_ei_wreg = id_wreg & ~exe_cancel & ~exe_ovr & ~mem_ovr; // 要加上i_mfc0指令
     assign ei_pc_src = (exe_cancel | exe_ovr | mem_ovr)? 2'b00 : pc_src;
-    assign ei_pc_ir_wen = pc_ir_wen | (id_cancel | exe_cancel | exe_ovr | mem_ovr); // 正在触发的流水阻塞需要取消+需要被取消的指令不能引发流水阻塞
     
     // cp0寄存器更新有关信号
     // exc_int指出发生异常/中断的同时,控制sta寄存器的更新
@@ -123,8 +120,7 @@ module c0_control #(parameter WIDTH=32)(
     // ei_sys   Impossible  Not allowed PCD(01)     PCD(01)
     // ei_unim  Impossible  Not allowed PCD(01)     PCD(01)
     // ei_ovr   PCE(10)     Impossible  PCM(11)     PCE(10)
-    // 异常/中断时如果指令(ID段)正在触发流水阻塞(pc_ir_wen=0),也需要保存PCD
-    assign epc_sel[0] = ei_int & ~pc_ir_wen | ei_int & id_is_bj | ei_sys | ei_unim | ei_ovr & mem_is_bj;
+    assign epc_sel[0] = ei_int & id_is_bj | ei_sys | ei_unim | ei_ovr & mem_is_bj;
     assign epc_sel[1] = ei_ovr;
     // cause
     // exccode: 00-int 01-sys 10-unim 11-ovr 

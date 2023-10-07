@@ -42,31 +42,25 @@ module top_bench();
         intr <= 0;
         #22;
         reset <= 1;
-        #158
-        // stall时发生中断
+        #598
+        // 一般情况中断
+        // intr <= 1;
+        #10;
+        // intr <= 0;
+        #50
+        // BJ指令ID段发生中断
         intr <= 1;
         #10;
         intr <= 0;
     end
 
-    // test for exc int
     // initial 
     // begin
-    //     clk <= 0;
-    //     reset <= 0;
-    //     intr <= 0;
-    //     #22;
-    //     reset <= 1;
-    //     #598
-    //     // 一般情况中断
-    //     // intr <= 1;
-    //     #10;
-    //     // intr <= 0;
-    //     #50
-    //     // BJ指令ID段发生中断
-    //     intr <= 1;
-    //     #10;
-    //     intr <= 0;
+    //     clk<=0;
+    //     reset <=1;
+    //     a <= -4;
+    //     b <= 1;
+    //     ci <= 1;
     // end
 
     always #5 clk=~clk;

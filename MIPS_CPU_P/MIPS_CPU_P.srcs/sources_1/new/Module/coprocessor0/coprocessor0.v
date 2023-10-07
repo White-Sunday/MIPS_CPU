@@ -35,11 +35,10 @@ module coprocessor0 #(parameter WIDTH=32)(
     input ov,
     input exe_wreg,
     input [WIDTH-1:0] exe_alu,
-    output [1:0] ei_pc_src,         // 经过cp0的处理,可以取消BJ指令的动作------------------取消1
+    output [1:0] ei_pc_src,         // 经过cp0的处理,可以取消当前BJ指令的执行
     output [WIDTH-1:0] ei_next_pc,  // 考虑异常/中断后的next_npc
-    output id_ei_wreg,              // 经过cp0的处理的id_wreg,可以取消指令的写寄存器动作----取消2-1
-    output id_ei_wmem,              // 经过cp0的处理的id_wmem,可以取消指令的写存储器动作----取消2-2
-    output ei_pc_ir_wen,            // 经过cp0的处理,可以取消指令可能引发的流水阻塞---------取消3
+    output id_ei_wreg,              // 经过cp0的处理的id_wreg,可以取消当前指令的执行
+    output id_ei_wmem,              // 经过cp0的处理的id_wmem,可以取消当前指令的执行
     output exe_ei_wreg,             // 经过cp0的处理的exe_wreg,可以取消当前指令的执行
     output [WIDTH-1:0] exe_ei_alu,  // 经过cp0的处理的exe_alu,即取出的sta等寄存器
     output inta);                   // 中断响应信号(interrupt aknowledgement)
@@ -61,6 +60,7 @@ module coprocessor0 #(parameter WIDTH=32)(
     wire id_cancel;                     // ID段得到的指令取消信号
     wire [1:0] id_mfc0;                 // move from cp0指令用于选择exe段的pc8,sta,cau与epc做为exe_alu
     wire mtc0;                          // move to cp0信号
+    wire exc_int;                       // 检测到异常/中断信号
     wire [1:0] epc_sel;                 // 用于epc_in0的选择信号
     wire [WIDTH-1:0] cause;             // cp0用于更新的cause内容
     wire [WIDTH-1:0] sta_lr;            // sta左移或右移4位的结果
@@ -68,7 +68,6 @@ module coprocessor0 #(parameter WIDTH=32)(
     wire [WIDTH-1:0] cau_in;            // cause寄存器的data in
     wire [WIDTH-1:0] sta_in;            // status寄存器的data in
     wire [WIDTH-1:0] epc_in;            // epc寄存器的data in
-    wire exc_int;                       // 检测到异常/中断信号,用来取消stall,否则无法跳转到中断服务
     wire [WIDTH-1:0] id_cau;            // cause寄存器的内容
     wire [WIDTH-1:0] id_sta;            // status寄存器的内容 IM[3:0]:ov,unimpl,sys,int;在程序里设置其初值,并限制嵌套次数
     wire [WIDTH-1:0] id_epc;            // epc寄存器的内容
@@ -96,14 +95,14 @@ module coprocessor0 #(parameter WIDTH=32)(
     // IF段(无)
     mux4x32 ei_npc_cntr(next_pc,id_epc,ei_base,32'h0,pc_sel,ei_next_pc);
     // FD流水寄存器
-    dffe32 fd_pc(pc,clk,clrn,ei_pc_ir_wen,id_pc);
-    dffe32 fd_instr(instr,clk,clrn,ei_pc_ir_wen,id_instr);
+    dffe32 fd_pc(pc,clk,clrn,pc_ir_wen,id_pc);
+    dffe32 fd_instr(instr,clk,clrn,pc_ir_wen,id_instr);
     dff fd_intr(intr,clk,clrn,id_intr);
     // ID段
     // c0 cu
-    c0_control c0_cu(clk,clrn,pc_src,id_wreg,id_wmem,id_intr,id_instr,id_sta,pc_ir_wen,exe_is_bj,
+    c0_control c0_cu(clk,clrn,pc_src,id_wreg,id_wmem,id_intr,id_instr,id_sta,exe_is_bj,
         exe_ovr,exe_cancel,mem_is_bj,mem_ovr,ei_pc_src,pc_sel,id_ei_wreg,id_ei_wmem,
-        id_is_bj,id_ov_en,id_cancel,id_mfc0,ei_pc_ir_wen,mtc0,exc_int,epc_sel,cause,wcau,wsta,wepc,inta);
+        id_is_bj,id_ov_en,id_cancel,id_mfc0,mtc0,exc_int,epc_sel,cause,wcau,wsta,wepc,inta);
     // status和epc
     mux2x32 sta_left_right({4'h0,id_sta[31:4]},{id_sta[27:0],4'h0},exc_int,sta_lr);
     mux4x32 epc_src(pc,id_pc,exe_pc,mem_pc,epc_sel,epc_in0);

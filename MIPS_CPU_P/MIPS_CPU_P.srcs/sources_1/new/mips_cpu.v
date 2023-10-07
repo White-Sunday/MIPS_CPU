@@ -93,20 +93,19 @@ module mips_cpu #(parameter WIDTH=32, ADDR=32, REGBITS=5)(
     // 异常/中断处理有关信号
     wire [1:0] ei_pc_src;
     wire [WIDTH-1:0] ei_next_pc;
-    wire ei_pc_ir_wen;
     wire id_ei_wreg;
     wire id_ei_wmem;
     wire exe_ei_wreg;
     wire [WIDTH-1:0] exe_ei_alu;
 
     // pc(program counter) ei_next_pc涉及异常/中断处理,原为next_pc
-    pipe_pc#(WIDTH) prog_cnt(clk,clrn,ei_pc_ir_wen,ei_next_pc,pc);
+    pipe_pc#(WIDTH) prog_cnt(clk,clrn,pc_ir_wen,ei_next_pc,pc);
     
     // IF段 ei_pc_src涉及异常/中断处理,原为pc_src
     pipe_if#(WIDTH, ADDR) if_stage(ei_pc_src,pc,b_pc,id_a,j_pc,next_pc,pc4,instr);
 
     // IF-ID 流水寄存器
-    pipe_fd_reg#(WIDTH) fd_reg(clk,clrn,ei_pc_ir_wen,pc4,instr,id_pc4,id_instr);
+    pipe_fd_reg#(WIDTH) fd_reg(clk,clrn,pc_ir_wen,pc4,instr,id_pc4,id_instr);
     // ID段  exe_ei_alu涉及异常/中断处理,原为exe_alu
     pipe_id#(WIDTH, REGBITS) id_stage(clk,clrn,id_pc4,id_instr,
         wb_rwd,exe_ei_alu,mem_alu,mem_mrd,exe_rn,mem_rn,wb_rn,
@@ -136,5 +135,5 @@ module mips_cpu #(parameter WIDTH=32, ADDR=32, REGBITS=5)(
     
     // 异常/中断处理
     coprocessor0 cp0(clk,clrn,intr,pc,instr,pc_src,next_pc,pc_ir_wen,id_b,id_wreg,id_wmem,ov,
-        exe_wreg,exe_alu,ei_pc_src,ei_next_pc,id_ei_wreg,id_ei_wmem,ei_pc_ir_wen,exe_ei_wreg,exe_ei_alu,inta);
+        exe_wreg,exe_alu,ei_pc_src,ei_next_pc,id_ei_wreg,id_ei_wmem,exe_ei_wreg,exe_ei_alu,inta);
 endmodule
